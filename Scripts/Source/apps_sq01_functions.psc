@@ -5,11 +5,13 @@ Int Property CurrentStage Auto Conditional
 GlobalVariable Property SpectatorDistance Auto
 Message Property WagesAddedMsg Auto
 MiscObject Property Septims Auto
+ReferenceAlias Property Alias_TavernGuest Auto
 ;-------------------------------------------------------
 ;	Frameworks
 ;-------------------------------------------------------
+APPS_Controller_SharedFunctions Property Controller Auto
 APPS_Controller_Variables Property Var Auto
-
+SexLabFramework Property SexLab Auto
 ;-------------------------------------------------------
 ;	Variables for Dancing task
 ;-------------------------------------------------------
@@ -31,6 +33,14 @@ Potion[] Property SupposedFoodList Auto
 ;-------------------------------------------------------
 Bool Property IsInDistance Auto Conditional
 Bool Property IsHadSexWithBeggar = False Auto Conditional
+
+;-------------------------------------------------------
+;	Variables for different events
+;-------------------------------------------------------
+Bool Property IsPickPocketFailed = False Auto Conditional
+Bool Property IsHadSexBefore = False Auto Conditional
+Bool Property IsSameCustomer = False Auto Conditional
+Int Property AmountOfSexRounds = 0 Auto Conditional
 
 ;-------------------------------------------------------
 ;	Events
@@ -59,6 +69,19 @@ Event OnUpdateGameTime()
 
 	RegisterForSingleUpdateGameTime(1)
 EndEvent
+
+Function SetupCustomer(Actor akCustomer)
+	Orders = 0
+	SupposedOrders = 0
+	Controller.CheckGold(akCustomer)
+	
+	If(SexLab.HadPlayerSex(akCustomer))
+		IsHadSexBefore = True
+		AmountOfSexRounds = SexLab.PlayerSexCount(akCustomer)
+	EndIf
+
+	Alias_TavernGuest.ForceRefTo(akCustomer)
+EndFunction
 ;-------------------------------------------------------
 ;	Functions for Tavern Job task
 ;-------------------------------------------------------

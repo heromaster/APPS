@@ -95,8 +95,6 @@ Function CheckGold(Actor akClient)
 			i += 1
 		EndWhile
 
-		GoldChecking.Cast(akClient)
-
 		If(akClient.GetGoldAmount() < 30)
 			If(akClient.IsChild())
 				akClient.AddItem(Septims, 50)
@@ -104,6 +102,8 @@ Function CheckGold(Actor akClient)
 				akClient.AddItem(Septims, 300 * HighestSexSkill)
 			EndIf
 		EndIf
+
+		GoldChecking.Cast(akClient)
 	EndIf
 EndFunction
 
