@@ -13,7 +13,6 @@ MagicEffect Property GoldChecker Auto
 Message Property CleanUpMsg Auto
 MiscObject Property Septims Auto
 Quest Property APPS_SQ01 Auto
-Spell Property CleanUpSpell Auto
 Spell Property GoldChecking Auto  
 APPS_Controller_Variables Property Var Auto
 SexLabFramework Property SexLab Auto
@@ -21,17 +20,18 @@ SexLabFramework Property SexLab Auto
 ; Quest progression Properties to see if the Dragonborn got identified
 ;------------------------------------------------------------------------------
 Faction Property DBIdentifiedFaction Auto
-Quest Property DragonRising  Auto 
-Quest Property WayOfTheVoice  Auto  
-Quest Property TheHorn  Auto  
-Quest Property DiplomaticImmunity  Auto  
-Quest Property CorneredRat  Auto  
-Quest Property AlduinsWall  Auto  
-Quest Property ThroathOfTheWorld  Auto  
-Quest Property ElderKnowledge  Auto  
-Quest Property AlduinsBane  Auto  
-Quest Property TheFallen  Auto  
-Quest Property BladeInTheDark  Auto
+Quest Property MQ104  Auto 
+Quest Property MQ105  Auto  
+Quest Property MQ105Ustengrav  Auto  
+Quest Property MQ106  Auto
+Quest Property MQ201  Auto  
+Quest Property MQ202  Auto  
+Quest Property MQ203  Auto  
+Quest Property MQ204  Auto  
+Quest Property MQ205  Auto  
+Quest Property MQ206  Auto  
+Quest Property MQ301  Auto  
+
 ;------------------------------------------------------------------------------
 ; Tasks
 ;------------------------------------------------------------------------------
@@ -217,9 +217,9 @@ Function PerformSexAct(Actor akPlayer, Actor akClient)
 	SexActorList = SexLab.SortActors(SexActorList)
 
 	If(Var.SexActToInt == 1 && (akClient.GetBaseObject() As ActorBase).GetSex() == 1 && (akPlayer.GetBaseObject() As ActorBase).GetSex() == 1)
-		SexAnimationList = SexLab.GetAnimationsByTag(2, "Cunnilingus", "Tribadism", tagSuppress = "Zaz", requireAll = False)
+		SexAnimationList = SexLab.GetAnimationsByTag(2, "Cunnilingus,Tribadism", tagSuppress = "Zaz,Aggressive", requireAll = False)
 	Else
-		SexAnimationList = SexLab.GetAnimationsByTag(2, Var.SexAct, tagSuppress = "Zaz")
+		SexAnimationList = SexLab.GetAnimationsByTag(2, Var.SexAct, tagSuppress = "Zaz,Aggressive")
 	EndIf
 
 	sslThreadModel th = SexLab.NewThread()
@@ -236,7 +236,7 @@ EndFunction
 Function CleanUp(Actor akPlayer)
 	If(akPlayer.HasMagicEffectWithKeyword(CumAnal) || akPlayer.HasMagicEffectWithKeyword(CumOral) || akPlayer.HasMagicEffectWithKeyword(CumVaginal))
 		If(CleanUpMsg.Show() == 0)
-			CleanUpSpell.Cast(akPlayer)
+			SexLab.ClearCum(akPlayer)
 		Else
 			ChangeDomSubValue(-5)
 		EndIf
@@ -262,48 +262,48 @@ Function IsDragonbornIdentified(Actor akSpeaker)
 		Return
 	EndIf
 
-	If(!DragonRising.IsCompleted())
+	If(!MQ104.IsCompleted())
 		Return
 	EndIf
 
-	If(TheFallen.IsCompleted())
+	If(MQ301.IsCompleted())
 		akSpeaker.SetFactionRank(DBIdentifiedFaction, 0)
 		Return
 	EndIf
 
-	If(WayOfTheVoice.IsCompleted())
+	If(MQ105.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
-	If(TheHorn.IsCompleted())
+	If(MQ105Ustengrav.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
-	If(BladeInTheDark.IsCompleted())
+	If(MQ106.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
-	If(DiplomaticImmunity.IsCompleted())
+	If(MQ201.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
-	If(CorneredRat.IsCompleted())
+	If(MQ202.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
-	If(AlduinsWall.IsCompleted())
+	If(MQ203.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
-	If(ThroathOfTheWorld.IsCompleted())
+	If(MQ204.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
-	If(ElderKnowledge.IsCompleted())
+	If(MQ205.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 	
-	If(AlduinsBane.IsCompleted())
+	If(MQ206.IsCompleted())
 		Chance += ChanceMult
 	EndIf
 
@@ -332,7 +332,7 @@ Function AddSatisfiedClient(Int auiTask, Actor akClient, Actor akPlayer = None)
 	ElseIf(auiTask == 3)
 		PleasedByDancingSpell.Cast(akClient)
 	EndIf
-	
+
 	AddToStatistics(auiTask)
 EndFunction
 
@@ -404,6 +404,10 @@ Function AddToStatistics(Int auiStat, Bool abSuccess = True, Bool abSameGuest = 
 			Var.TotalGuestsUnhappy += 1
 		EndIf
 	EndIf
+EndFunction
+
+Function SkillLevelDifference(Actor akPlayer, Actor akClient, String akSexAct)
+	Var.SexSkillDifference = SexLab.Stats.GetPlayerSkillLevel(akSexAct) - SexLab.Stats.GetSkillLevel(akClient, akSexAct)
 EndFunction
 
 ;On stopping the quest, this call will reset all necessary variables so this quest can be started fresh

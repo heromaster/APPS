@@ -31,18 +31,19 @@ GlobalVariable Property WorldSetting Auto
 ;-------------------------------------------------------
 ;	General variables used everywhere
 ;-------------------------------------------------------
-Bool Property IsNPCFollowing = False Auto Conditional
-Bool Property IsInDistance = True Auto Conditional
-Bool Property IsPlayerWhore = False Auto
-Int Property WhoreJobState = 0 Auto Conditional
-Int Property HoursWorked = 0 Auto Conditional
-Int Property SexActToInt Auto Conditional
-Bool Property IsTavernJobOnCD = False Auto Conditional
-Bool Property IsWhoreJobBeginOnCD = False Auto Conditional
-Bool Property IsGivingAllGold = False Auto
-Bool Property StraponOriginalValue Auto
+Bool Property IsNPCFollowing = False Auto Conditional Hidden
+Bool Property IsInDistance = True Auto Conditional Hidden
+Bool Property IsPlayerWhore = False Auto Hidden
+Int Property WhoreJobState = 0 Auto Conditional Hidden
+Int Property HoursWorked = 0 Auto Conditional Hidden
+Int Property SexActToInt Auto Conditional Hidden
+Int Property SexSkillDifference Auto Conditional Hidden
+Bool Property IsTavernJobOnCD = False Auto Conditional Hidden
+Bool Property IsWhoreJobBeginOnCD = False Auto Conditional Hidden
+Bool Property IsGivingAllGold = False Auto Hidden
+Bool Property StraponOriginalValue Auto Hidden
 
-String Property SexAct
+String Property SexAct Hidden
 	Function Set(String Value)
 		If(Value == "None")
 			_SexAct = Value
@@ -71,36 +72,36 @@ GlobalVariable Property DeductedWages Auto
 ;-------------------------------------------------------
 ;	Statistics variables
 ;-------------------------------------------------------
-Float Property Performance = 0.00 Auto Conditional
-Float Property Satisfaction = 0.00 Auto Conditional
-Int Property DanceOrdersAccepted = 0 Auto Conditional
-Int Property DanceOrdersDeclined = 0 Auto Conditional
-Int Property DanceOrdersRequested = 0 Auto Conditional
-Int Property DaysWorked = 0 Auto Conditional
-Int Property FoodOrdersFailed = 0 Auto Conditional
-Int Property FoodOrdersRequested = 0 Auto Conditional
-Int Property FoodOrdersSucceeded = 0 Auto Conditional
-Int Property GuestsHappy = 0 Auto Conditional
-Int Property GuestsServed = 0  Auto Conditional
-Int Property GuestsUnhappy = 0  Auto Conditional
-Int Property SexOrdersAccepted = 0  Auto Conditional
-Int Property SexOrdersDeclined = 0  Auto Conditional
-Int Property SexOrdersRequested = 0  Auto Conditional
-Int Property TotalGuestsServed = 0  Auto
-Int Property TotalGuestsHappy = 0  Auto
-Int Property TotalGuestsUnhappy = 0  Auto
-Int Property TotalFoodOrdersRequested = 0  Auto
-Int property TotalFoodOrdersSucceeded = 0  Auto
-Int Property TotalFoodOrdersFailed = 0  Auto
-Int Property TotalSexOrdersRequested = 0  Auto
-Int Property TotalSexOrdersAccepted = 0  Auto
-Int Property TotalSexOrdersDeclined = 0  Auto
-Int Property TotalDanceOrdersRequested = 0  Auto
-Int Property TotalDanceOrdersAccepted = 0  Auto
-Int Property TotalDanceOrdersDeclined = 0  Auto
+Float Property Performance = 0.00 Auto Conditional Hidden
+Float Property Satisfaction = 0.00 Auto Conditional Hidden
+Int Property DanceOrdersAccepted = 0 Auto Conditional Hidden
+Int Property DanceOrdersDeclined = 0 Auto Conditional Hidden
+Int Property DanceOrdersRequested = 0 Auto Conditional Hidden
+Int Property DaysWorked = 0 Auto Conditional Hidden
+Int Property FoodOrdersFailed = 0 Auto Conditional Hidden
+Int Property FoodOrdersRequested = 0 Auto Conditional Hidden
+Int Property FoodOrdersSucceeded = 0 Auto Conditional Hidden
+Int Property GuestsHappy = 0 Auto Conditional Hidden
+Int Property GuestsServed = 0  Auto Conditional Hidden
+Int Property GuestsUnhappy = 0  Auto Conditional Hidden
+Int Property SexOrdersAccepted = 0  Auto Conditional Hidden
+Int Property SexOrdersDeclined = 0  Auto Conditional Hidden
+Int Property SexOrdersRequested = 0  Auto Conditional Hidden
+Int Property TotalGuestsServed = 0  Auto Hidden
+Int Property TotalGuestsHappy = 0  Auto Hidden
+Int Property TotalGuestsUnhappy = 0  Auto Hidden
+Int Property TotalFoodOrdersRequested = 0  Auto Hidden
+Int property TotalFoodOrdersSucceeded = 0  Auto Hidden
+Int Property TotalFoodOrdersFailed = 0  Auto Hidden
+Int Property TotalSexOrdersRequested = 0  Auto Hidden
+Int Property TotalSexOrdersAccepted = 0  Auto Hidden
+Int Property TotalSexOrdersDeclined = 0  Auto Hidden
+Int Property TotalDanceOrdersRequested = 0  Auto Hidden
+Int Property TotalDanceOrdersAccepted = 0  Auto Hidden
+Int Property TotalDanceOrdersDeclined = 0  Auto Hidden
 
 ;-------------------------------------------------------
 ;	Variables for Tavern Job task
 ;-------------------------------------------------------
-Float Property WaitBeforeBeginWhoreJob = 2.0 Auto
-Int Property Bill = 0  Auto 
+Float Property WaitBeforeBeginWhoreJob = 2.0 Auto Hidden
+Int Property Bill = 0  Auto  Hidden 

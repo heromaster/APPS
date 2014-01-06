@@ -1,7 +1,9 @@
 Scriptname APPS_SQ01_Functions Extends Quest  Conditional
 
 Bool IsQuestStopping = False
-Int Property CurrentStage Auto Conditional
+Int Property CurrentStage Auto Hidden Conditional
+Class Property BeggarClass Auto
+Faction Property OneTimeSetupFaction Auto
 GlobalVariable Property SpectatorDistance Auto
 Message Property WagesAddedMsg Auto
 MiscObject Property Septims Auto
@@ -15,18 +17,18 @@ SexLabFramework Property SexLab Auto
 ;-------------------------------------------------------
 ;	Variables for Dancing task
 ;-------------------------------------------------------
-Bool Property IsHadDancedForBeggar = False Auto Conditional
+Bool Property IsHadDancedForBeggar = False Auto Hidden Conditional
 
 ;-------------------------------------------------------
 ;	Variables for Tavernjob task
 ;-------------------------------------------------------
-Bool Property IsCorrectFoodOrder = False Auto Conditional
-Bool Property IsOrderWrittenDown = False Auto Conditional
-Int Property DeductedWages = 0 Auto
-Int Property Orders = 0 Auto Conditional
-Int Property SupposedOrders = 0 Auto
-Potion[] Property FoodList Auto
-Potion[] Property SupposedFoodList Auto
+Bool Property IsCorrectFoodOrder = False Auto Hidden Conditional
+Bool Property IsOrderWrittenDown = False Auto Hidden Conditional
+Int Property DeductedWages = 0 Auto Hidden
+Int Property Orders = 0 Auto Conditional Hidden
+Int Property SupposedOrders = 0 Auto Hidden
+Potion[] Property FoodList Auto Hidden
+Potion[] Property SupposedFoodList Auto Hidden
 
 ;-------------------------------------------------------
 ;	Variables for Sexorder task
@@ -71,6 +73,7 @@ Event OnUpdateGameTime()
 EndEvent
 
 Function SetupCustomer(Actor akCustomer)
+	Debug.Notification(akCustomer.GetName())
 	Orders = 0
 	SupposedOrders = 0
 	Controller.CheckGold(akCustomer)
@@ -78,6 +81,16 @@ Function SetupCustomer(Actor akCustomer)
 	If(SexLab.HadPlayerSex(akCustomer))
 		IsHadSexBefore = True
 		AmountOfSexRounds = SexLab.PlayerSexCount(akCustomer)
+	EndIf
+
+	If(!akCustomer.IsInFaction(OneTimeSetupFaction))
+		If(akCustomer.GetActorBase().GetClass() == BeggarClass)
+			SexLab.Stats.SetInt(akCustomer, "Anal", Utility.RandomInt(3,6))
+			SexLab.Stats.SetInt(akCustomer, "Oral", Utility.RandomInt(3,6))
+			SexLab.Stats.SetInt(akCustomer, "Vaginal", Utility.RandomInt(3,6))
+		EndIf
+
+		akCustomer.SetFactionRank(OneTimeSetupFaction, 0)
 	EndIf
 
 	Alias_TavernGuest.ForceRefTo(akCustomer)
