@@ -1,6 +1,15 @@
 Scriptname APPS_Controller_SharedFunctions Extends Quest
 Import GlobalVariable
+Import StorageUtil
 
+Bool Property IsPlayerWhore Auto Hidden
+Bool Property IsGivingAllGold Auto Hidden
+Bool Property IsWhoreJobBeginOnCD Auto Hidden
+Bool Property IsTavernJobOnCD Auto Hidden
+Int Property Bill Auto Hidden
+Int Property SexActToInt Auto Hidden
+Float Property WaitBeforeBeginWhoreJob Auto Hidden
+String Property SexAct Auto Hidden
 ;------------------------------------------------------------------------------
 ; IMPORTANT: Don't translate any strings in here
 ;------------------------------------------------------------------------------
@@ -14,7 +23,6 @@ Message Property CleanUpMsg Auto
 MiscObject Property Septims Auto
 Quest Property APPS_SQ01 Auto
 Spell Property GoldChecking Auto  
-APPS_Controller_Variables Property Var Auto
 SexLabFramework Property SexLab Auto
 ;------------------------------------------------------------------------------
 ; Quest progression Properties to see if the Dragonborn got identified
@@ -55,13 +63,13 @@ Float WhoreJobBeginCD = 0.0
 Event OnUpdateGameTime()
 	Float CurrentTime = Utility.GetCurrentGameTime()
 	
-	If(TavernJobCD + (Var.HoursToWork.GetValueInt() / 24) As Float  <= CurrentTime)
-		Var.IsTavernJobOnCD = False
-	ElseIf(WhoreJobBeginCD + Var.WaitBeforeBeginWhoreJob <= CurrentTime)
-		Var.IsWhoreJobBeginOnCD = False
+	If(TavernJobCD + (GetIntValue(None, "APPS.Settings.HoursToWork") / 24) As Float  <= CurrentTime)
+		IsTavernJobOnCD = False
+	ElseIf(WhoreJobBeginCD + WaitBeforeBeginWhoreJob <= CurrentTime)
+		IsWhoreJobBeginOnCD = False
 	EndIf
 	
-	If(Var.IsTavernJobOnCD || Var.IsWhoreJobBeginOnCD)
+	If(IsTavernJobOnCD || IsWhoreJobBeginOnCD)
 		RegisterForSingleUpdateGameTime(0.5)
 	EndIf
 EndEvent
@@ -110,12 +118,12 @@ EndFunction
 ;Changes the direction of being submissive or dominant
 ;Hardened cap is -50/50 and hard cap is -150/150
 Function ChangeDomSubValue(Int Value)
-	Var.DomSub.SetValueInt(Var.DomSub.GetValueInt() + Value)
+	AdjustIntValue(None, "APPS.DomSub", Value)
 	
-	If(Var.DomSub.GetValueInt() > 150)
-		Var.DomSub.SetValueInt(150)
-	ElseIf(Var.DomSub.GetValueInt() < -150)
-		Var.DomSub.SetValueInt(-150)
+	If(GetIntValue(None, "APPS.DomSub") > 150)
+		SetIntValue(None, "APPS.DomSub", 150)
+	ElseIf(GetIntValue(None, "APPS.DomSub") < -150)
+		SetIntValue(None, "APPS.DomSub", -150)
 	EndIf
 EndFunction
 
@@ -127,17 +135,17 @@ EndFunction
 ;TODO: CONSIDER THE RETURNVALUE
 Int Function EarnReward(Actor akPlayer, Actor akClient, Int auiTask)
 	Float GoldAmount = 0
-	Float SpeechCraftModifier = akPlayer.GetAV("Speechcraft") / 100 * Utility.RandomInt(Var.MinTipSC.GetValueInt(), Var.MaxTipSC.GetValueInt()) * 0.05
-	Float TipPercentage = Utility.RandomInt(Var.MinTip.GetValueInt(), Var.MaxTip.GetValueInt()) * 0.05
+	Float SpeechCraftModifier = akPlayer.GetAV("Speechcraft") / 100 * Utility.RandomInt(GetIntValue(None, "APPS.Settings.MinTipSC"), GetIntValue(None, "APPS.Settings.MaxTipSC")) * 0.05
+	Float TipPercentage = Utility.RandomInt(GetIntValue(None, "APPS.Settings.MinTip"), GetIntValue(None, "APPS.Settings.MaxTip")) * 0.05
 	Int ClientGoldLeft = akClient.GetItemCount(Septims)
 	Int ReturnValue = 1
 	Int i = 0
 
-	If(auiTask == 1)		
-		GoldAmount = Math.Ceiling(Var.Bill * TipPercentage)
-		GoldAmount += Math.Ceiling(Var.Bill * SpeechCraftModifier)
-		Var.InnkeeperShare.SetValueInt(Var.InnkeeperShare.GetValueInt() + Var.Bill)
-		GoldAmount += Var.Bill
+	If(auiTask == 1)
+		GoldAmount = Math.Ceiling(Bill * TipPercentage)
+		GoldAmount += Math.Ceiling(Bill * SpeechCraftModifier)
+		AdjustIntValue(None, "APPS.InnkeeperShare", Bill)
+		GoldAmount += Bill
 	ElseIf(auiTask == 2)
 		Float[] ProLvl = New Float[4]
 		ProLvl[0] = 0
@@ -146,11 +154,11 @@ Int Function EarnReward(Actor akPlayer, Actor akClient, Int auiTask)
 		ProLvl[3] = SexLab.GetPlayerStatLevel("Anal") + 1 
 		Int Sexperience
 
-		If(Var.SexActToInt == 1 && ProLvl[1] < 7)
+		If(SexActToInt == 1 && ProLvl[1] < 7)
 			Sexperience = Math.Ceiling(0.7 *ProLvl[1] + 0.15 * ProLvl[2] + 0.15 * ProLvl[3]) 
-		ElseIf(Var.SexActToInt == 2 && ProLvl[2] < 6)
+		ElseIf(SexActToInt == 2 && ProLvl[2] < 6)
 			Sexperience = Math.Ceiling(0.7 * ProLvl[2] + 0.15 * ProLvl[1] + 0.15 * ProLvl[3])
-		ElseIf(Var.SexActToInt == 3 && ProLvl[3] < 6)
+		ElseIf(SexActToInt == 3 && ProLvl[3] < 6)
 			Sexperience = Math.Ceiling(0.7 * ProLvl[3] + 0.15 * ProLvl[1] + 0.15 * ProLvl[2])
 		EndIf
 
@@ -160,49 +168,49 @@ Int Function EarnReward(Actor akPlayer, Actor akClient, Int auiTask)
 			Sexperience = 1
 		EndIf
 	
-		GoldAmount = Sexperience * Var.WhoreBasePayment.GetValueInt()
+		GoldAmount = Sexperience * GetIntValue(None, "APPS.Settings.WhoreBasePayment")
 
-		If(Var.SexActToInt == 1)
-			GoldAmount *= Var.OralMod.GetValue()
-		ElseIf(Var.SexActToInt == 2)
-			GoldAmount *= Var.VaginalMod.GetValue()
-		ElseIf(Var.SexActToInt == 3)
-			GoldAmount *= Var.AnalMod.GetValue()
+		If(SexActToInt == 1)
+			GoldAmount *= GetFloatValue(None, "APPS.Settings.OralMod")
+		ElseIf(SexActToInt == 2)
+			GoldAmount *= GetFloatValue(None, "APPS.Settings.VaginalMod")
+		ElseIf(SexActToInt == 3)
+			GoldAmount *= GetFloatValue(None, "APPS.Settings.AnalMod")
 		EndIf
 		
 		If(akClient.GetFactionRank(DBIdentifiedFaction) == 1)
-			GoldAmount += GoldAmount * Var.DragonbornBonus.GetValue()
+			GoldAmount += GoldAmount * GetFloatValue(None, "APPS.Settings.DragonbornBonus")
 		EndIf
 
 		;If(APPS_SQ01.IsStageDone(40))
 		;	GoldAmount += GoldAmount * Var.WhoreBonus.GetValue()
 		;EndIf
 
-		If(Var.IsPlayerWhore)
-			Var.InnkeeperShare.SetValueInt(Var.InnkeeperShare.GetValueInt() + Math.Floor(GoldAmount / 2) As Int)
+		If(IsPlayerWhore)
+			AdjustIntValue(None, "APPS.InnkeeperShare.", Math.Floor(GoldAmount / 2))
 		EndIf
 	ElseIf(auiTask == 3)
-		GoldAmount = Utility.RandomInt(Var.MinDanceReward.GetValueInt(), Var.MaxDanceReward.GetValueInt())
+		GoldAmount = Utility.RandomInt(GetIntValue(None, "APPS.Settings.MinDanceReward"), GetIntValue(None, "APPS.Settings.MaxDanceReward"))
 		
-		If(Var.IsPlayerWhore)
-			Var.InnkeeperShare.SetValueInt(Var.InnkeeperShare.GetValueInt() + Math.Floor(GoldAmount / 2) As Int)
+		If(IsPlayerWhore)
+			AdjustIntValue(None, "APPS.InnkeeperShare", Math.Floor(GoldAmount / 2))
 		EndIf
 	EndIf
 
 	If(GoldAmount > ClientGoldLeft)
 		GoldAmount = ClientGoldLeft
 		ReturnValue = 1
-	ElseIf(Var.IsGivingAllGold && GoldAmount > ClientGoldLeft)
+	ElseIf(IsGivingAllGold && GoldAmount > ClientGoldLeft)
 		GoldAmount = ClientGoldLeft
 		ReturnValue = 2
-	ElseIf(Var.IsGivingAllGold && GoldAmount <= ClientGoldLeft)
+	ElseIf(IsGivingAllGold && GoldAmount <= ClientGoldLeft)
 		GoldAmount = ClientGoldLeft
 		ReturnValue = 3
 	EndIf
 	
 	akPlayer.AddItem(Septims, Math.Ceiling(GoldAmount))
 	akClient.RemoveItem(Septims, Math.Ceiling(GoldAmount))
-	Var.IsGivingAllGold = False
+	IsGivingAllGold = False
 
 	Return ReturnValue
 EndFunction
@@ -216,10 +224,10 @@ Function PerformSexAct(Actor akPlayer, Actor akClient)
 	SexActorList[1] = akPlayer
 	SexActorList = SexLab.SortActors(SexActorList)
 
-	If(Var.SexActToInt == 1 && (akClient.GetBaseObject() As ActorBase).GetSex() == 1 && (akPlayer.GetBaseObject() As ActorBase).GetSex() == 1)
+	If(SexActToInt == 1 && (akClient.GetBaseObject() As ActorBase).GetSex() == 1 && (akPlayer.GetBaseObject() As ActorBase).GetSex() == 1)
 		SexAnimationList = SexLab.GetAnimationsByTag(2, "Cunnilingus,Tribadism", tagSuppress = "Zaz,Aggressive", requireAll = False)
 	Else
-		SexAnimationList = SexLab.GetAnimationsByTag(2, Var.SexAct, tagSuppress = "Zaz,Aggressive")
+		SexAnimationList = SexLab.GetAnimationsByTag(2, SexAct, tagSuppress = "Zaz,Aggressive")
 	EndIf
 
 	sslThreadModel th = SexLab.NewThread()
@@ -317,7 +325,7 @@ Function IsSpectatorNearPC(Actor akPlayer, Actor akClient)
 EndFunction
 
 Function SetSexRequest(String SexType)
-	Var.SexAct = SexType
+	SexAct = SexType
 EndFunction
 
 ;On a successful request this function casts a spell to atop the same client asking a new request
@@ -358,83 +366,85 @@ EndFunction
 ;Stores requests and their result, can be seen under APPS --> Statistics
 Function AddToStatistics(Int auiStat, Bool abSuccess = True, Bool abSameGuest = False)
 	If(auiStat == 1)
-		Var.FoodOrdersRequested += 1
-		Var.TotalFoodOrdersRequested += 1
+		AdjustIntValue(None, "APPS.Stats.FoodOrdersRequested", 1)
+		AdjustIntValue(None, "APPS.TotalFoodOrdersRequested", 1)
 
 		If(abSuccess)
-			Var.FoodOrdersSucceeded += 1
-			Var.TotalFoodOrdersSucceeded += 1
+			AdjustIntValue(None, "APPS.Stats.FoodOrdersSucceeded", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalFoodOrdersSucceeded", 1)
 		Else
-			Var.FoodOrdersFailed += 1
-			Var.TotalFoodOrdersFailed += 1
+			AdjustIntValue(None, "APPS.Stats.FoodOrdersFailed", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalFoodOrdersFailed", 1)
 		EndIf
 	ElseIf(auiStat == 2)
-		Var.SexOrdersRequested += 1
-		Var.TotalSexOrdersRequested += 1
+		AdjustIntValue(None, "APPS.Stats.SexOrdersRequested", 1)
+		AdjustIntValue(None, "APPS.Stats.TotalSexOrdersRequested", 1)
 
 		If(abSuccess)
-			Var.SexOrdersAccepted += 1
-			Var.TotalSexOrdersAccepted += 1
+			AdjustIntValue(None, "APPS.Stats.SexOrdersAccepted", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalSexOrdersAccepted", 1)
 		Else
-			Var.SexOrdersDeclined += 1
-			Var.TotalSexOrdersDeclined += 1
+			AdjustIntValue(None, "APPS.Stats.SexOrdersDeclined", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalSexOrdersDeclined", 1)
 		EndIf
 	ElseIf(auiStat == 3)
-		Var.DanceOrdersRequested += 1
-		Var.TotalDanceOrdersRequested += 1
+		AdjustIntValue(None, "APPS.Stats.DanceOrdersRequested", 1)
+		AdjustIntValue(None, "APPS.Stats.TotalDanceOrdersRequested", 1)
 
 		If(abSuccess)
-			Var.DanceOrdersAccepted += 1
-			Var.TotalDanceOrdersAccepted += 1
+			AdjustIntValue(None, "APPS.Stats.DanceOrdersAccepted", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalDanceOrdersAccepted", 1)
 		Else
-			Var.DanceOrdersDeclined += 1
-			Var.TotalDanceOrdersDeclined += 1
+			AdjustIntValue(None, "APPS.Stats.DanceOrdersDeclined", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalDanceOrdersDeclined", 1)
 		EndIf
 	EndIf
 
 	If(!abSameGuest)
-		Var.GuestsServed += 1
-		Var.TotalGuestsServed += 1
+		AdjustIntValue(None, "APPS.Stats.GuestsServed", 1)
+		AdjustIntValue(None, "APPS.Stats.TotalGuestsServed", 1)
 
 		If(abSuccess)
-			Var.GuestsHappy += 1
-			Var.TotalGuestsHappy += 1
+			AdjustIntValue(None, "APPS.Stats.GuestsHappy", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalGuestsHappy", 1)
 		Else
-			Var.GuestsUnhappy += 1
-			Var.TotalGuestsUnhappy += 1
+			AdjustIntValue(None, "APPS.Stats.GuestsUnhappy", 1)
+			AdjustIntValue(None, "APPS.Stats.TotalGuestsUnhappy", 1)
 		EndIf
 	EndIf
 EndFunction
 
+;/
 Function SkillLevelDifference(Actor akPlayer, Actor akClient, String akSexAct)
-	Var.SexSkillDifference = SexLab.Stats.GetPlayerSkillLevel(akSexAct) - SexLab.Stats.GetSkillLevel(akClient, akSexAct)
+	Var.SexSkillDifference = SexLab.Stats.GetSkillLevel(akPlayer, akSexAct) - SexLab.Stats.GetSkillLevel(akClient, akSexAct)
 EndFunction
+/;
 
 ;On stopping the quest, this call will reset all necessary variables so this quest can be started fresh
 Function ResetClients()
-	Var.HoursWorked = 0
-	Var.DanceOrdersDeclined = 0
-	Var.DanceOrdersRequested = 0
-	Var.DanceOrdersAccepted = 0
-	Var.FoodOrdersFailed = 0
-	Var.FoodOrdersRequested = 0
-	Var.FoodOrdersSucceeded = 0
-	Var.SexOrdersDeclined = 0
-	Var.SexOrdersRequested = 0
-	Var.SexOrdersAccepted = 0
-	Var.GuestsServed = 0
-	Var.GuestsHappy = 0
-	Var.GuestsUnhappy = 0
-	Var.InnkeeperShare.SetValueInt(0)
+	UnsetIntValue(None, "APPS.Stats.HoursWorked")
+	UnsetIntValue(None, "APPS.Stats.DanceOrdersDeclined")
+	UnsetIntValue(None, "APPS.Stats.DanceOrdersRequested")
+	UnsetIntValue(None, "APPS.Stats.DanceOrdersAccepted")
+	UnsetIntValue(None, "APPS.Stats.FoodOrdersFailed")
+	UnsetIntValue(None, "APPS.Stats.FoodOrdersRequested")
+	UnsetIntValue(None, "APPS.Stats.FoodOrdersSucceeded")
+	UnsetIntValue(None, "APPS.Stats.SexOrdersDeclined")
+	UnsetIntValue(None, "APPS.Stats.SexOrdersRequested")
+	UnsetIntValue(None, "APPS.Stats.SexOrdersAccepted")
+	UnsetIntValue(None, "APPS.Stats.GuestsServed")
+	UnsetIntValue(None, "APPS.Stats.GuestsHappy")
+	UnsetIntValue(None, "APPS.Stats.GuestsUnhappy")
+	UnsetIntValue(None, "APPS.InnkeeperShare")
 EndFunction
 
 ;Cooldowns necessary to progress the storyline and to simulate restings
-Function SetCooldowns(Int auiCDTask)	
+Function SetCooldowns(Int auiCDTask)
 	If(auiCDTask == 1)
-		Var.IsTavernJobOnCD = True
+		IsTavernJobOnCD = True
 		TavernJobCD = Utility.GetCurrentGameTime()
 	ElseIf(auiCDTask == 2)
-		Var.IsWhoreJobBeginOnCD = True
+		IsWhoreJobBeginOnCD = True
 		WhoreJobBeginCD = Utility.GetCurrentGameTime()
 	EndIf
 	
@@ -443,5 +453,5 @@ EndFunction
 
 ;If player could agree with client to give all his gold on a successful task
 Function SetIsGivingAllGold()
-	Var.IsGivingAllGold = True
+	IsGivingAllGold = True
 EndFunction
