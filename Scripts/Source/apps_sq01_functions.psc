@@ -1,4 +1,8 @@
 Scriptname APPS_SQ01_Functions Extends Quest Conditional
+Import StorageUtil
+
+Int Property FoodOrdersFailed Auto Conditional Hidden
+Float Property Satisfaction Auto Conditional Hidden
 
 Bool IsQuestStopping = False
 Int Property CurrentStage Auto Hidden Conditional
@@ -21,7 +25,7 @@ Bool Property IsHadDancedForBeggar = False Auto Hidden Conditional
 Bool Property IsCorrectFoodOrder = False Auto Hidden Conditional
 Bool Property IsOrderWrittenDown = False Auto Hidden Conditional
 Int Property DeductedWages = 0 Auto Hidden
-Bool Property HoursWorked Auto Conditional Hidden
+Int Property HoursWorked Auto Conditional Hidden
 Potion[] Property FoodList Auto Hidden
 Potion[] Property SupposedFoodList Auto Hidden
 ;-------------------------------------------------------
@@ -58,9 +62,6 @@ Event OnUpdateGameTime()
 EndEvent
 
 Function SetupCustomer(Actor akCustomer)
-	Debug.Notification(akCustomer.GetName())
-	Orders = 0
-	SupposedOrders = 0
 	Controller.CheckGold(akCustomer)
 
 	Alias_TavernGuest.ForceRefTo(akCustomer)
@@ -76,68 +77,25 @@ Function DismissFollower(Actor akFollower)
 	EndIf
 EndFunction
 
-Function CheckOrder()
-	Int i = 0
-	
-	If(IsOrderWrittenDown)
-		IsCorrectFoodOrder = True
-		Return
-	EndIf
-	
-	If(SupposedOrders < Orders)
-		IsCorrectFoodOrder = False
-		Return
-	EndIf
-	
-	While(i < SupposedOrders)
-		If(SupposedFoodList[i] != FoodList[i])
-			IsCorrectFoodOrder = False
-			Return
-		EndIf
-
-		i += 1
-	EndWhile
-
-	IsCorrectFoodOrder = True
-EndFunction
-
 Function CutWages()
-	Var.Wages.SetValueInt(Math.Floor(Var.Wages.GetValueInt() * 2 / 3) As Int)
-EndFunction
-
-Function RemoveOrderItems(Actor akPlayer)
-	Int i = 0
-	
-	If(IsOrderWrittenDown)
-		While(i < Orders)
-			akPlayer.RemoveItem(FoodList[i])
-			
-			i += 1
-		EndWhile
-	Else
-		While(i < SupposedOrders)
-			akPlayer.RemoveItem(SupposedFoodList[i])
-		
-			i += 1
-		EndWhile
-	EndIf
+	SetIntValue(None, "APPS.SQ01.Wages", Math.Floor(GetIntValue(None, "APPS.SQ01.Wages") * 2 / 3))
 EndFunction
 
 Function PayOrReceiveGold(Actor akSpeaker, Actor akPlayer)
-	Int ToPay = Var.Wages.GetValueInt() - Var.InnkeeperShare.GetValueInt()
+	Int ToPay = GetIntValue(None, "APPS.SQ01.Wages") - GetIntValue(None, "APPS.SQ01.InnkeeperShare")
 
 	If(ToPay > 0)
 		akPlayer.AddItem(Septims, ToPay)
 		akSpeaker.RemoveItem(Septims, ToPay)
 	Else
-		ToPay = ToPay * -2
+		ToPay = -ToPay
 		akPlayer.RemoveItem(Septims, ToPay)
 		akSpeaker.AddItem(Septims, ToPay)
 	EndIf
 EndFunction
 
 Function CreateSummary()
-		Var.Satisfaction = (Var.GuestsHappy As Float) / (Var.GuestsServed As Float) * 100
+		Satisfaction = (GetIntValue(None, "APPS.Stats.GuestsHappy") As Float) / (GetIntValue(None, "APPS.Stats.GuestsServed") As Float) * 100
 EndFunction
 
 ObjectReference Function FindSweepSpot(Actor akPlayer)

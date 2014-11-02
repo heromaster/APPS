@@ -1,7 +1,9 @@
-Scriptname APPS_Controller_SharedFunctions Extends Quest
+Scriptname APPS_Controller_SharedFunctions Extends Quest Conditional
 Import GlobalVariable
 Import StorageUtil
 
+Int Property FoodOrdersFailed Auto Conditional Hidden
+;------------------------------
 Bool Property IsPlayerWhore Auto Hidden
 Bool Property IsGivingAllGold Auto Hidden
 Bool Property IsWhoreJobBeginOnCD Auto Hidden
@@ -39,7 +41,6 @@ Quest Property MQ204  Auto
 Quest Property MQ205  Auto  
 Quest Property MQ206  Auto  
 Quest Property MQ301  Auto  
-
 ;------------------------------------------------------------------------------
 ; Tasks
 ;------------------------------------------------------------------------------
@@ -51,12 +52,11 @@ Spell Property PleasedByDancingSpell Auto
 Spell Property PleasedBySexSpell Auto
 Spell Property RefractorySpell Auto
 ;------------------------------------------------------------------------------
-; Cooldowns
+;	Cooldowns
 ;------------------------------------------------------------------------------
 Float TavernJobCD = 0.0
 Float WhoreJobCD = 0.0
 Float WhoreJobBeginCD = 0.0
-
 ;------------------------------------------------------------------------------
 ;	Events
 ;------------------------------------------------------------------------------
@@ -73,7 +73,6 @@ Event OnUpdateGameTime()
 		RegisterForSingleUpdateGameTime(0.5)
 	EndIf
 EndEvent
-
 ;------------------------------------------------------------------------------
 ;	Functions
 ;------------------------------------------------------------------------------
@@ -374,6 +373,7 @@ Function AddToStatistics(Int auiStat, Bool abSuccess = True, Bool abSameGuest = 
 			AdjustIntValue(None, "APPS.Stats.TotalFoodOrdersSucceeded", 1)
 		Else
 			AdjustIntValue(None, "APPS.Stats.FoodOrdersFailed", 1)
+			FoodOrdersFailed = GetIntValue(None, "APPS.Stats.FoodOrdersFailed")
 			AdjustIntValue(None, "APPS.Stats.TotalFoodOrdersFailed", 1)
 		EndIf
 	ElseIf(auiStat == 2)
@@ -427,6 +427,7 @@ Function ResetClients()
 	UnsetIntValue(None, "APPS.Stats.DanceOrdersRequested")
 	UnsetIntValue(None, "APPS.Stats.DanceOrdersAccepted")
 	UnsetIntValue(None, "APPS.Stats.FoodOrdersFailed")
+	FoodOrdersFailed = 0
 	UnsetIntValue(None, "APPS.Stats.FoodOrdersRequested")
 	UnsetIntValue(None, "APPS.Stats.FoodOrdersSucceeded")
 	UnsetIntValue(None, "APPS.Stats.SexOrdersDeclined")
