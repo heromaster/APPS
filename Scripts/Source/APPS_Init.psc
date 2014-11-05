@@ -1,6 +1,6 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
 ;NEXT FRAGMENT INDEX 3
-Scriptname APPS_Init Extends APPS_ModRegFW_Functions Hidden
+Scriptname APPS_Init Extends APPS_FW_Registrar Hidden
 
 ;BEGIN FRAGMENT Fragment_0
 Function Fragment_0()
@@ -8,6 +8,7 @@ Function Fragment_0()
 	RegisterMod()
 	RegisterInitQuest(Self, 10)
 	RegisterForExceptionModule("APPS")
+	RegisterForRelationshipModule()
 ;END CODE
 EndFunction
 ;END FRAGMENT

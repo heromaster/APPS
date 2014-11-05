@@ -2,6 +2,11 @@ Scriptname APPS_Controller_SharedFunctions Extends Quest Conditional
 Import GlobalVariable
 Import StorageUtil
 
+String Property MinTip = "APPS.Settings.MinTip" AutoReadOnly Hidden
+String Property MaxTip = "APPS.Settings.MaxTip" AutoReadOnly Hidden
+String Property MinTipSC = "APPS.Settings.MinTipSC" AutoReadOnly Hidden
+String Property MaxTipSC = "APPS.Settings.MaxTipSC" AutoReadOnly Hidden
+String Property InnkeeperShare = "APPS.InnkeeperShare" AutoReadOnly Hidden
 Int Property FoodOrdersFailed Auto Conditional Hidden
 ;------------------------------
 Bool Property IsPlayerWhore Auto Hidden
@@ -15,6 +20,7 @@ String Property SexAct Auto Hidden
 ;------------------------------------------------------------------------------
 ; IMPORTANT: Don't translate any strings in here
 ;------------------------------------------------------------------------------
+Actor Property PlayerRef Auto
 Class Property BeggarClass Auto
 GlobalVariable Property SpectatorDistance Auto
 Keyword Property CumAnal Auto
@@ -126,26 +132,20 @@ Function ChangeDomSubValue(Int Value)
 	EndIf
 EndFunction
 
-;Rewarding the player for a successful completed task
-;Return value 0: Player received expected sum
-;ReturnValue 1: Player received only what client had left
-;ReturnValue 2: Player received all gold from client, still was less than expected
-;ReturnValue 3: Player received all gold from client, much more than expected
-;TODO: CONSIDER THE RETURNVALUE
-Int Function EarnReward(Actor akPlayer, Actor akClient, Int auiTask)
-	Float GoldAmount = 0
-	Float SpeechCraftModifier = akPlayer.GetAV("Speechcraft") / 100 * Utility.RandomInt(GetIntValue(None, "APPS.Settings.MinTipSC"), GetIntValue(None, "APPS.Settings.MaxTipSC")) * 0.05
-	Float TipPercentage = Utility.RandomInt(GetIntValue(None, "APPS.Settings.MinTip"), GetIntValue(None, "APPS.Settings.MaxTip")) * 0.05
+Int Function EarnReward(Actor akClient, Int auiJob)
+	Float GoldAmount
+	Float SpeechCraftModifier = PlayerRef.GetAV("Speechcraft") / 100 * Utility.RandomInt(GetIntValue(None, MinTipSC), GetIntValue(None, MaxTipSC)) * 0.05
+	Float TipPercentage = Utility.RandomInt(GetIntValue(None, MinTip), GetIntValue(None, MaxTip)) * 0.05
 	Int ClientGoldLeft = akClient.GetItemCount(Septims)
 	Int ReturnValue = 1
 	Int i = 0
 
-	If(auiTask == 1)
-		GoldAmount = Math.Ceiling(Bill * TipPercentage)
-		GoldAmount += Math.Ceiling(Bill * SpeechCraftModifier)
-		AdjustIntValue(None, "APPS.InnkeeperShare", Bill)
-		GoldAmount += Bill
-	ElseIf(auiTask == 2)
+	If(auiJob == 1)
+		GoldAmount = Math.Ceiling(GetIntValue(None, Bill) * TipPercentage)
+		GoldAmount += Math.Ceiling(GetIntValue(None, Bill) * SpeechCraftModifier)
+		AdjustIntValue(None, InnkeeperShare, GetIntValue(None, Bill))
+		GoldAmount += GetIntValue(None, Bill)
+	ElseIf(auiJob == 2)
 		Float[] ProLvl = New Float[4]
 		ProLvl[0] = 0
 		ProLvl[1] = SexLab.GetPlayerStatLevel("Oral") + 1
@@ -188,11 +188,11 @@ Int Function EarnReward(Actor akPlayer, Actor akClient, Int auiTask)
 		If(IsPlayerWhore)
 			AdjustIntValue(None, "APPS.InnkeeperShare.", Math.Floor(GoldAmount / 2))
 		EndIf
-	ElseIf(auiTask == 3)
+	ElseIf(auiJob == 3)
 		GoldAmount = Utility.RandomInt(GetIntValue(None, "APPS.Settings.MinDanceReward"), GetIntValue(None, "APPS.Settings.MaxDanceReward"))
 		
 		If(IsPlayerWhore)
-			AdjustIntValue(None, "APPS.InnkeeperShare", Math.Floor(GoldAmount / 2))
+			AdjustIntValue(None, InnkeeperShare, Math.Floor(GoldAmount / 2))
 		EndIf
 	EndIf
 
@@ -207,12 +207,19 @@ Int Function EarnReward(Actor akPlayer, Actor akClient, Int auiTask)
 		ReturnValue = 3
 	EndIf
 	
-	akPlayer.AddItem(Septims, Math.Ceiling(GoldAmount))
+	PlayerRef.AddItem(Septims, Math.Ceiling(GoldAmount))
 	akClient.RemoveItem(Septims, Math.Ceiling(GoldAmount))
 	IsGivingAllGold = False
-
+	UnsetIntValue(None, Bill)
 	Return ReturnValue
 EndFunction
+;Rewarding the player for a successful completed task
+;Return value 0: Player received expected sum
+;ReturnValue 1: Player received only what client had left
+;ReturnValue 2: Player received all gold from client, still was less than expected
+;ReturnValue 3: Player received all gold from client, much more than expected
+;TODO: CONSIDER THE RETURNVALUE
+
 
 ;Prepares and calls SexLab Sex scenes
 ;TODO: Currently only 2 sexpartners, increase to at least 5
@@ -456,3 +463,4 @@ EndFunction
 Function SetIsGivingAllGold()
 	IsGivingAllGold = True
 EndFunction
+APPS_FW_Relationship Property RS  Auto  

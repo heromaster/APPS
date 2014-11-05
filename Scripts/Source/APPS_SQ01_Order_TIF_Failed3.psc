@@ -17,11 +17,14 @@ Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 kmyQuest.DeductWages()
-Controller.AddToStatistics(1, False)
+kmyQuest.AddToStatistics(1, False)
+RS.ModRelationshipPoints(Alias_TavernGuest.GetActorRef(), -10)
+RS.ModRelationshipPoints(akSpeaker, -5)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-APPS_Controller_SharedFunctions Property Controller Auto
+ReferenceAlias Property Alias_TavernGuest Auto
 APPS_SQ01_Order_Functions Property kmyQuest Auto
+APPS_FW_Relationship Property RS Auto

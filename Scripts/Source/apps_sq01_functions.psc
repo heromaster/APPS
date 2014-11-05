@@ -1,20 +1,18 @@
-Scriptname APPS_SQ01_Functions Extends Quest Conditional
+Scriptname APPS_SQ01_Functions Extends APPS_Controller_SharedFunctions Conditional
 Import StorageUtil
 
-Int Property FoodOrdersFailed Auto Conditional Hidden
+String Property Wages = "APPS.SQ01.Wages" AutoReadOnly Hidden
+String Property Payment = "APPS.Settings.Payment" AutoReadOnly Hidden
+String Property HoursToWork = "APPS.SQ01.Settings.HoursToWork" AutoReadOnly Hidden
 Float Property Satisfaction Auto Conditional Hidden
-
 Bool IsQuestStopping = False
 Int Property CurrentStage Auto Hidden Conditional
-GlobalVariable Property SpectatorDistance Auto
 Message Property WagesAddedMsg Auto
-MiscObject Property Septims Auto
 ReferenceAlias Property Alias_TavernGuest Auto
 ;-------------------------------------------------------
 ;	Frameworks
 ;-------------------------------------------------------
 APPS_Controller_SharedFunctions Property Controller Auto
-SexLabFramework Property SexLab Auto
 ;-------------------------------------------------------
 ;	Variables for Dancing task
 ;-------------------------------------------------------
@@ -22,8 +20,6 @@ Bool Property IsHadDancedForBeggar = False Auto Hidden Conditional
 ;-------------------------------------------------------
 ;	Variables for Tavernjob task
 ;-------------------------------------------------------
-Bool Property IsCorrectFoodOrder = False Auto Hidden Conditional
-Bool Property IsOrderWrittenDown = False Auto Hidden Conditional
 Int Property DeductedWages = 0 Auto Hidden
 Int Property HoursWorked Auto Conditional Hidden
 Potion[] Property FoodList Auto Hidden
@@ -43,17 +39,17 @@ Int Property AmountOfSexRounds = 0 Auto Conditional
 ;-------------------------------------------------------
 ;	Events
 ;-------------------------------------------------------
-Event OnUpdateGameTime()	
+Event OnUpdateGameTime()
 	If(GetStage() == 120)
 		Return
 	EndIf
 
 	HoursWorked += 1
-	AdjustIntValue(None, "APPS.SQ01.Wages", GetIntValue(None, "APPS.Settings.Payment"))
+	AdjustIntValue(None, Wages, GetIntValue(None, Payment))
 
-	WagesAddedMsg.Show(GetIntValue(None, "APPS.Settings.Payment"))
+	WagesAddedMsg.Show(GetIntValue(None, Payment))
 
-	If(HoursWorked >= GetIntValue(None, "APPS.SQ01.Settings.HoursToWork"))
+	If(HoursWorked >= GetIntValue(None, HoursToWork))
 		IsQuestStopping = True
 		Return
 	EndIf
@@ -78,11 +74,11 @@ Function DismissFollower(Actor akFollower)
 EndFunction
 
 Function CutWages()
-	SetIntValue(None, "APPS.SQ01.Wages", Math.Floor(GetIntValue(None, "APPS.SQ01.Wages") * 2 / 3))
+	SetIntValue(None, Wages, Math.Floor(GetIntValue(None, Wages) * 2 / 3))
 EndFunction
 
 Function PayOrReceiveGold(Actor akSpeaker, Actor akPlayer)
-	Int ToPay = GetIntValue(None, "APPS.SQ01.Wages") - GetIntValue(None, "APPS.SQ01.InnkeeperShare")
+	Int ToPay = GetIntValue(None, Wages) - GetIntValue(None, InnkeeperShare)
 
 	If(ToPay > 0)
 		akPlayer.AddItem(Septims, ToPay)

@@ -1,15 +1,10 @@
-Scriptname APPS_SQ01_Order_Functions extends Quest Conditional
+Scriptname APPS_SQ01_Order_Functions extends APPS_SQ01_Functions Conditional
 Import StorageUtil
 
-Actor Property PlayerRef Auto
+Bool Property IsCorrectFoodOrder Auto Conditional Hidden
 Bool Property IsOrderNoted Auto Conditional Hidden
 Bool Property IsQuestStopping Auto Conditional Hidden
-Int Property OrdersFailed Auto Conditional Hidden
-Int Property HoursWorked Auto Conditional Hidden
 Int Property Orders Auto Conditional Hidden
-
-Bool IsCorrectFoodOrder
-Int Bill
 
 Function FillOrder(Int aiOrderNumber, Potion akOrderedFood)
 	FormListAdd(None, "APPS.SQ01.Order", akOrderedFood)
@@ -27,7 +22,7 @@ Function AddOrderedItems()
 		While(i < Orders)
 			Potion FoodItem = FormListGet(None, "APPS.SQ01.Order", i) As Potion
 			PlayerRef.AddItem(FoodItem)
-			Bill += FoodItem.GetGoldValue()
+			AdjustIntValue(None, "APPS.SQ01.Bill", FoodItem.GetGoldValue())
 
 			i += 1
 		EndWhile
@@ -35,7 +30,7 @@ Function AddOrderedItems()
 		While(i < FormListCount(None, "APPS.SQ01.SupposedOrder"))
 			Potion SupposedFoodItem = FormListGet(None, "APPS.SQ01.SupposedOrder", i) As Potion
 			PlayerRef.AddItem(SupposedFoodItem)
-			Bill += SupposedFoodItem.GetGoldValue()
+			AdjustIntValue(None, "APPS.SQ01.Bill", SupposedFoodItem.GetGoldValue())
 
 			i += 1
 		EndWhile
@@ -43,7 +38,7 @@ Function AddOrderedItems()
 EndFunction
 
 Function DeductWages()
-	AdjustIntValue(None, "APPS.SQ01.Wages", -Bill)
+	AdjustIntValue(None, "APPS.SQ01.Wages", -(GetIntValue(None, "APPS.SQ01.Bill")))
 EndFunction
 
 Function CheckOrder()
@@ -71,20 +66,23 @@ Function CheckOrder()
 	IsCorrectFoodOrder = True
 EndFunction
 
-Function RemoveOrderItems(Actor akPlayer)
+Function RemoveOrderedItems()
 	Int i = 0
 
 	If(IsOrderNoted)
 		While(i < Orders)
-			akPlayer.RemoveItem(FormListGet(None, "APPS.SQ01.Order", i))
+			PlayerRef.RemoveItem(FormListGet(None, "APPS.SQ01.Order", i))
 			
 			i += 1
 		EndWhile
 	Else
 		While(i < FormListCount(None, "APPS.SQ01.SupposedOrder"))
-			akPlayer.RemoveItem(FormListGet(None, "APPS.SQ01.SupposedOrder", i))
+			PlayerRef.RemoveItem(FormListGet(None, "APPS.SQ01.SupposedOrder", i))
 
 			i += 1
 		EndWhile
 	EndIf
+
+	FormListClear(None, "APPS.SQ01.Order")
+	FormListClear(None, "APPS.SQ01.SupposedOrder")
 EndFunction
