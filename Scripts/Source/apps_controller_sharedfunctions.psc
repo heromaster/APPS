@@ -1,5 +1,4 @@
 Scriptname APPS_Controller_SharedFunctions Extends Quest Conditional
-Import GlobalVariable
 Import StorageUtil
 
 String Property MinTip = "APPS.Settings.MinTip" AutoReadOnly Hidden
@@ -29,9 +28,9 @@ Keyword Property CumVaginal Auto
 MagicEffect Property GoldChecker Auto
 Message Property CleanUpMsg Auto
 MiscObject Property Septims Auto
-Quest Property APPS_SQ01 Auto
 Spell Property GoldChecking Auto  
 SexLabFramework Property SexLab Auto
+APPS_FW_Relationship Property RS Auto
 ;------------------------------------------------------------------------------
 ; Quest progression Properties to see if the Dragonborn got identified
 ;------------------------------------------------------------------------------
@@ -326,28 +325,25 @@ Function IsDragonbornIdentified(Actor akSpeaker)
 	EndIf
 EndFunction
 
-Function IsSpectatorNearPC(Actor akPlayer, Actor akClient)
-
-EndFunction
-
 Function SetSexRequest(String SexType)
 	SexAct = SexType
 EndFunction
 
 ;On a successful request this function casts a spell to atop the same client asking a new request
 ;Also casts a stackable detrimental spell to the player to simulate a refractory period
-Function AddSatisfiedClient(Int auiTask, Actor akClient, Actor akPlayer = None)
+Function AddSatisfiedClient(Int auiTask, Actor akClient)
 	If(auiTask == 1)
 		PleasedByFoodSpell.Cast(akClient)
 	ElseIf(auiTask == 2)
 		PleasedBySexSpell.Cast(akClient)
 		RefractorySpell.Cast(akClient)
-		RefractorySpell.Cast(akPlayer)
+		RefractorySpell.Cast(PlayerRef)
 	ElseIf(auiTask == 3)
 		PleasedByDancingSpell.Cast(akClient)
 	EndIf
 
 	AddToStatistics(auiTask)
+	RS.ModRelationshipPoints(akClient, 5)
 EndFunction
 
 ;On a failed request this function casts a spell to stop the same client asking a new request
@@ -361,6 +357,7 @@ Function AddDissatisfiedClient(Int auiTask, Actor akClient)
 	EndIf
 	
 	AddToStatistics(auiTask, False)
+	RS.ModRelationshipPoints(akClient, -10)
 EndFunction
 
 ;If player successfully declined a request w/o making the client unhappy
@@ -463,4 +460,3 @@ EndFunction
 Function SetIsGivingAllGold()
 	IsGivingAllGold = True
 EndFunction
-APPS_FW_Relationship Property RS  Auto  

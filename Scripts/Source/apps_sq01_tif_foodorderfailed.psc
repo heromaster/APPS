@@ -6,7 +6,7 @@ Scriptname APPS_SQ01_TIF_FoodOrderFailed Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-GetOwningQuest().SetStage(50)
+getowningquest().setstage(40)
 ;END CODE
 EndFunction
 ;END FRAGMENT

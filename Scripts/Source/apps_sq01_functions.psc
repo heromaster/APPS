@@ -10,10 +10,6 @@ Int Property CurrentStage Auto Hidden Conditional
 Message Property WagesAddedMsg Auto
 ReferenceAlias Property Alias_TavernGuest Auto
 ;-------------------------------------------------------
-;	Frameworks
-;-------------------------------------------------------
-APPS_Controller_SharedFunctions Property Controller Auto
-;-------------------------------------------------------
 ;	Variables for Dancing task
 ;-------------------------------------------------------
 Bool Property IsHadDancedForBeggar = False Auto Hidden Conditional
@@ -32,10 +28,10 @@ Bool Property IsHadSexWithBeggar = False Auto Conditional
 ;-------------------------------------------------------
 ;	Variables for different events
 ;-------------------------------------------------------
-Bool Property IsPickPocketFailed = False Auto Conditional
-Bool Property IsHadSexBefore = False Auto Conditional
-Bool Property IsSameCustomer = False Auto Conditional
-Int Property AmountOfSexRounds = 0 Auto Conditional
+Bool Property IsPickPocketFailed = False Auto Conditional Hidden
+Bool Property IsHadSexBefore = False Auto Conditional Hidden
+Bool Property IsSameCustomer = False Auto Conditional Hidden
+Int Property AmountOfSexRounds = 0 Auto Conditional Hidden
 ;-------------------------------------------------------
 ;	Events
 ;-------------------------------------------------------
@@ -58,7 +54,7 @@ Event OnUpdateGameTime()
 EndEvent
 
 Function SetupCustomer(Actor akCustomer)
-	Controller.CheckGold(akCustomer)
+	CheckGold(akCustomer)
 
 	Alias_TavernGuest.ForceRefTo(akCustomer)
 EndFunction
