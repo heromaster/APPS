@@ -1,36 +1,110 @@
 Scriptname APPS_Controller_SharedFunctions Extends Quest Conditional
 Import StorageUtil
 
-String Property MinTip = "APPS.Settings.MinTip" AutoReadOnly Hidden
-String Property MaxTip = "APPS.Settings.MaxTip" AutoReadOnly Hidden
-String Property MinTipSC = "APPS.Settings.MinTipSC" AutoReadOnly Hidden
-String Property MaxTipSC = "APPS.Settings.MaxTipSC" AutoReadOnly Hidden
-String Property InnkeeperShare = "APPS.InnkeeperShare" AutoReadOnly Hidden
+String _SexAct
+
+Bool Property IsTavernJobOnCD Auto Conditional Hidden
+Bool Property IsWhoreJobBeginOnCD Auto Conditional Hidden
+Float Property Performance Auto Conditional Hidden
+Float Property Satisfaction Auto Conditional Hidden
+Int Property SexActToInt Auto Conditional Hidden
+Int Property SexSkillDifference Auto Hidden
+Int Property DanceOrdersAccepted Auto Conditional Hidden
+Int Property DanceOrdersDeclined Auto Conditional Hidden
+Int Property DanceOrdersRequested Auto Conditional Hidden
+Int Property DaysWorked Auto Conditional Hidden
 Int Property FoodOrdersFailed Auto Conditional Hidden
-;------------------------------
-Bool Property IsPlayerWhore Auto Hidden
-Bool Property IsGivingAllGold Auto Hidden
-Bool Property IsWhoreJobBeginOnCD Auto Hidden
-Bool Property IsTavernJobOnCD Auto Hidden
-Int Property Bill Auto Hidden
-Int Property SexActToInt Auto Hidden
-Float Property WaitBeforeBeginWhoreJob Auto Hidden
-String Property SexAct Auto Hidden
+Int Property FoodOrdersRequested Auto Conditional Hidden
+Int Property FoodOrdersSucceeded Auto Conditional Hidden
+Int Property GuestsHappy Auto Conditional Hidden
+Int Property GuestsServed Auto Conditional Hidden
+Int Property GuestsUnhappy Auto Conditional Hidden
+Int Property SexOrdersAccepted Auto Conditional Hidden
+Int Property SexOrdersDeclined Auto Conditional Hidden
+Int Property SexOrdersRequested Auto Conditional Hidden
+Int Property HoursWorked Auto Conditional Hidden
+String Property SexAct Hidden
+	Function Set(String Value)
+		If(Value == "None")
+			_SexAct = Value
+			SexActToInt = 0
+		ElseIf(Value == "Oral")
+			_SexAct = Value
+			SexActToInt = 1
+		ElseIf(Value == "Vaginal")
+			_SexAct = Value
+			SexActToInt = 2
+		ElseIf(Value == "Anal")
+			_SexAct = Value
+			SexActToInt = 3
+		EndIf
+	EndFunction
+
+	String Function Get()
+		Return _SexAct
+	EndFunction
+EndProperty
+
+String Property SUKEY_ANAL_MOD = "APPS.Settings.AnalMod" AutoReadOnly Hidden
+String Property SUKEY_BILL = "APPS.Bill" AutoReadOnly Hidden
+String Property SUKEY_DANCE_ORDERS_ACCEPTED = "APPS.Stats.SexOrdersAccepted" AutoReadOnly Hidden
+String Property SUKEY_DANCE_ORDERS_DECLINED = "APPS.Stats.SexOrdersDeclined" AutoReadOnly Hidden
+String Property SUKEY_DANCE_ORDERS_REQUESTED ="APPS.Stats.SexOrdersRequested" AutoReadOnly Hidden
+String Property SUKEY_DAYS_WORKED = "APPS.Stats.DaysWorked" AutoReadOnly Hidden
+String Property SUKEY_DRAGONBORN_BONUS = "APPS.Settings.DragonbornBonus" AutoReadOnly Hidden
+String Property SUKEY_FOOD_ORDERS_FAILED = "APPS.Stats.FoodOrdersFailed" AutoReadOnly Hidden
+String Property SUKEY_FOOD_ORDERS_REQUESTED = "APPS.Stats.FoodOrdersRequested" AutoReadOnly Hidden
+String Property SUKEY_FOOD_ORDERS_SUCCEEDED = "APPS.Stats.FoodOrdersSucceeded" AutoReadOnly Hidden
+String Property SUKEY_GUESTS_HAPPY = "APPS.Stats.GuestsHappy" AutoReadOnly Hidden
+String Property SUKEY_GUESTS_SERVED = "APPS.Stats.GuestsServed" AutoReadOnly Hidden
+String Property SUKEY_GUESTS_UNHAPPY = "APPS.Stats.GuestsUnhappy" AutoReadOnly Hidden
+String Property SUKEY_HOURS_TO_WORK = "APPS.Settings.HoursToWork" AutoReadOnly Hidden
+String Property SUKEY_INNKEEPER_SHARE = "APPS.InnkeeperShare" AutoReadOnly Hidden
+String Property SUKEY_IS_GIVING_ALL_GOLD = "APPS.IsGivingAllGold" AutoReadOnly Hidden
+String Property SUKEY_IS_PLAYER_WHORE = "APPS.IsPlayerWhore" AutoReadOnly Hidden
+String Property SUKEY_MAX_DANCE_REWARD = "APPS.Settings.MaxDanceReward" AutoReadOnly Hidden
+String Property SUKEY_MAX_TIP = "APPS.Settings.MaxTip" AutoReadOnly Hidden
+String Property SUKEY_MAX_TIP_SC = "APPS.Settings.MaxTipSC" AutoReadOnly Hidden
+String Property SUKEY_MIN_DANCE_REWARD = "APPS.Settings.MinDanceReward" AutoReadOnly Hidden
+String Property SUKEY_MIN_TIP = "APPS.Settings.MinTip" AutoReadOnly Hidden
+String Property SUKEY_MIN_TIP_SC = "APPS.Settings.MinTipSC" AutoReadOnly Hidden
+String Property SUKEY_ORAL_MOD = "APPS.Settings.OralMod" AutoReadOnly Hidden
+String Property SUKEY_SEX_ORDERS_ACCEPTED = "APPS.Stats.SexOrdersAccepted" AutoReadOnly Hidden
+String Property SUKEY_SEX_ORDERS_DECLINED = "APPS.Stats.SexOrdersDeclined" AutoReadOnly Hidden
+String Property SUKEY_SEX_ORDERS_REQUESTED = "APPS.Stats.SexOrdersRequested" AutoReadOnly Hidden
+String Property SUKEY_SUB_DOM = "APPS.SubDom" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_DANCE_ORDERS_ACCEPTED = "APPS.Stats.TotalDanceOrdersAccepted" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_DANCE_ORDERS_DECLINED = "APPS.Stats.TotalDanceOrdersDeclined" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_DANCE_ORDERS_REQUESTED = "APPS.Stats.TotalDanceOrdersRequested" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_FOOD_ORDERS_FAILED = "APPS.Stats.TotalFoodOrdersFailed" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_FOOD_ORDERS_REQUESTED = "APPS.Stats.TotalFoodOrdersRequested" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_FOOD_ORDERS_SUCCEEDED = "APPS.Stats.TotalFoodOrdersSucceeded" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_GUESTS_HAPPY = "APPS.Stats.TotalGuestsHappy" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_GUESTS_SERVED = "APPS.Stats.TotalGuestsServed" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_GUESTS_UNHAPPY = "APPS.Stats.TotalGuestsUnhappy" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_SEX_ORDERS_ACCEPTED = "APPS.Stats.TotalSexOrdersAccepted" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_SEX_ORDERS_DECLINED = "APPS.Stats.TotalSexOrdersDeclined" AutoReadOnly Hidden
+String Property SUKEY_TOTAL_SEX_ORDERS_REQUESTED = "APPS.Stats.TotalSexOrdersRequested" AutoReadOnly Hidden
+String Property SUKEY_VAGINAL_MOD = "APPS.Settings.VaginalMod" AutoReadOnly Hidden
+String Property SUKEY_WAIT_FOR_WHORE_JOB = "APPS.WaitBeforeBeginWhoreJob" AutoReadOnly Hidden
+String Property SUKEY_WHORE_BASE_PAYMENT = "APPS.Settings.WhoreBasePayment" AutoReadOnly Hidden
+
+Actor Property PlayerRef Auto
 ;------------------------------------------------------------------------------
 ; IMPORTANT: Don't translate any strings in here
 ;------------------------------------------------------------------------------
-Actor Property PlayerRef Auto
 Class Property BeggarClass Auto
 GlobalVariable Property SpectatorDistance Auto
 Keyword Property CumAnal Auto
 Keyword Property CumOral Auto
 Keyword Property CumVaginal Auto
-MagicEffect Property GoldChecker Auto
+MagicEffect Property RefreshGoldEffect Auto
 Message Property CleanUpMsg Auto
 MiscObject Property Septims Auto
-Spell Property GoldChecking Auto  
+Quest Property APPS_SQ01 Auto
+Spell Property RefreshGoldSpell Auto  
+
 SexLabFramework Property SexLab Auto
-APPS_FW_Relationship Property RS Auto
 ;------------------------------------------------------------------------------
 ; Quest progression Properties to see if the Dragonborn got identified
 ;------------------------------------------------------------------------------
@@ -46,6 +120,7 @@ Quest Property MQ204  Auto
 Quest Property MQ205  Auto  
 Quest Property MQ206  Auto  
 Quest Property MQ301  Auto  
+
 ;------------------------------------------------------------------------------
 ; Tasks
 ;------------------------------------------------------------------------------
@@ -57,51 +132,53 @@ Spell Property PleasedByDancingSpell Auto
 Spell Property PleasedBySexSpell Auto
 Spell Property RefractorySpell Auto
 ;------------------------------------------------------------------------------
-;	Cooldowns
+; Cooldowns
 ;------------------------------------------------------------------------------
 Float TavernJobCD = 0.0
 Float WhoreJobCD = 0.0
 Float WhoreJobBeginCD = 0.0
+
 ;------------------------------------------------------------------------------
 ;	Events
 ;------------------------------------------------------------------------------
 Event OnUpdateGameTime()
 	Float CurrentTime = Utility.GetCurrentGameTime()
-	
-	If(TavernJobCD + (GetIntValue(None, "APPS.Settings.HoursToWork") / 24) As Float  <= CurrentTime)
+
+	If(TavernJobCD + (GetIntValue(None, SUKEY_HOURS_TO_WORK) / 24) As Float  <= CurrentTime)
 		IsTavernJobOnCD = False
-	ElseIf(WhoreJobBeginCD + WaitBeforeBeginWhoreJob <= CurrentTime)
+	ElseIf(WhoreJobBeginCD + GetFloatValue(None, SUKEY_WAIT_FOR_WHORE_JOB) <= CurrentTime)
 		IsWhoreJobBeginOnCD = False
 	EndIf
-	
+
 	If(IsTavernJobOnCD || IsWhoreJobBeginOnCD)
 		RegisterForSingleUpdateGameTime(0.5)
 	EndIf
 EndEvent
+
 ;------------------------------------------------------------------------------
 ;	Functions
 ;------------------------------------------------------------------------------
 ;Checks if the NPC has enough gold. Spell will be recast every 24h ingame
 Function CheckGold(Actor akClient)
-	ActorBase NPCClass = akClient.GetActorBase()
+	Class NPCClass = akClient.GetActorBase().GetClass()
 	Int i = 0
-	Int[] ProLvl = New Int[3]
+	Int[] ProfessionLevel = New Int[3]
 	Int HighestSexSkill = 0
 
-	If(NPCClass.GetClass() == BeggarClass)
+	If(NPCClass == BeggarClass)
 		Return
 	EndIf
-	
-	If(akClient.HasMagicEffect(GoldChecker))
+
+	If(akClient.HasMagicEffect(RefreshGoldEffect))
 		Return
 	Else
-		ProLvl[0] = SexLab.GetPlayerStatLevel("Oral") + 1
-		ProLvl[1] = SexLab.GetPlayerStatLevel("Vaginal") + 1
-		ProLvl[2] = SexLab.GetPlayerStatLevel("Anal") + 1
-		
-		While(i <= ProLvl.Length - 1)
-			If(ProLvl[i] > HighestSexSkill)
-				HighestSexSkill = ProLvl[i]
+		ProfessionLevel[0] = SexLab.GetPlayerStatLevel("Oral") + 1
+		ProfessionLevel[1] = SexLab.GetPlayerStatLevel("Vaginal") + 1
+		ProfessionLevel[2] = SexLab.GetPlayerStatLevel("Anal") + 1
+
+		While(i <= ProfessionLevel.Length - 1)
+			If(ProfessionLevel[i] > HighestSexSkill)
+				HighestSexSkill = ProfessionLevel[i]
 			EndIf
 			
 			i += 1
@@ -115,49 +192,55 @@ Function CheckGold(Actor akClient)
 			EndIf
 		EndIf
 
-		GoldChecking.Cast(akClient)
+		RefreshGoldSpell.Cast(akClient)
 	EndIf
 EndFunction
 
 ;Changes the direction of being submissive or dominant
 ;Hardened cap is -50/50 and hard cap is -150/150
 Function ChangeDomSubValue(Int Value)
-	AdjustIntValue(None, "APPS.DomSub", Value)
-	
-	If(GetIntValue(None, "APPS.DomSub") > 150)
-		SetIntValue(None, "APPS.DomSub", 150)
-	ElseIf(GetIntValue(None, "APPS.DomSub") < -150)
-		SetIntValue(None, "APPS.DomSub", -150)
+	AdjustIntValue(None, SUKEY_SUB_DOM, Value)
+
+	If(GetIntValue(None, SUKEY_SUB_DOM) > 150)
+		SetIntValue(None, SUKEY_SUB_DOM, 150)
+	ElseIf(GetIntValue(None, SUKEY_SUB_DOM) < -150)
+		SetIntValue(None, SUKEY_SUB_DOM, -150)
 	EndIf
 EndFunction
 
+;Rewarding the player for a successful completed task
+;Return value 0: Player received expected sum
+;ReturnValue 1: Player received only what client had left
+;ReturnValue 2: Player received all gold from client, still was less than expected
+;ReturnValue 3: Player received all gold from client, much more than expected
+;TODO: CONSIDER THE RETURNVALUE
 Int Function EarnReward(Actor akClient, Int auiJob)
 	Float GoldAmount
-	Float SpeechCraftModifier = PlayerRef.GetAV("Speechcraft") / 100 * Utility.RandomInt(GetIntValue(None, MinTipSC), GetIntValue(None, MaxTipSC)) * 0.05
-	Float TipPercentage = Utility.RandomInt(GetIntValue(None, MinTip), GetIntValue(None, MaxTip)) * 0.05
+	Float SpeechCraftModifier = PlayerRef.GetAV("Speechcraft") / 100 * Utility.RandomInt(GetIntValue(None,SUKEY_MIN_TIP_SC), GetIntValue(None, SUKEY_MAX_TIP_SC)) * 0.05
+	Float TipPercentage = Utility.RandomInt(GetIntValue(None, SUKEY_MIN_TIP), GetIntValue(None, SUKEY_MAX_TIP)) * 0.05
 	Int ClientGoldLeft = akClient.GetItemCount(Septims)
 	Int ReturnValue = 1
 	Int i = 0
 
 	If(auiJob == 1)
-		GoldAmount = Math.Ceiling(GetIntValue(None, Bill) * TipPercentage)
-		GoldAmount += Math.Ceiling(GetIntValue(None, Bill) * SpeechCraftModifier)
-		AdjustIntValue(None, InnkeeperShare, GetIntValue(None, Bill))
-		GoldAmount += GetIntValue(None, Bill)
+		GoldAmount = Math.Ceiling(GetIntValue(None, SUKEY_BILL) * TipPercentage)
+		GoldAmount += Math.Ceiling(GetIntValue(None, SUKEY_BILL) * SpeechCraftModifier)
+		AdjustIntValue(None, SUKEY_INNKEEPER_SHARE, GetIntValue(None, SUKEY_BILL))
+		GoldAmount += GetIntValue(None, SUKEY_BILL)
 	ElseIf(auiJob == 2)
-		Float[] ProLvl = New Float[4]
-		ProLvl[0] = 0
-		ProLvl[1] = SexLab.GetPlayerStatLevel("Oral") + 1
-		ProLvl[2] = SexLab.GetPlayerStatLevel("Vaginal") + 1
-		ProLvl[3] = SexLab.GetPlayerStatLevel("Anal") + 1 
+		Float[] ProfessionLevel = New Float[4]
+		ProfessionLevel[0] = 0
+		ProfessionLevel[1] = SexLab.GetPlayerStatLevel("Oral") + 1
+		ProfessionLevel[2] = SexLab.GetPlayerStatLevel("Vaginal") + 1
+		ProfessionLevel[3] = SexLab.GetPlayerStatLevel("Anal") + 1 
 		Int Sexperience
 
-		If(SexActToInt == 1 && ProLvl[1] < 7)
-			Sexperience = Math.Ceiling(0.7 *ProLvl[1] + 0.15 * ProLvl[2] + 0.15 * ProLvl[3]) 
-		ElseIf(SexActToInt == 2 && ProLvl[2] < 6)
-			Sexperience = Math.Ceiling(0.7 * ProLvl[2] + 0.15 * ProLvl[1] + 0.15 * ProLvl[3])
-		ElseIf(SexActToInt == 3 && ProLvl[3] < 6)
-			Sexperience = Math.Ceiling(0.7 * ProLvl[3] + 0.15 * ProLvl[1] + 0.15 * ProLvl[2])
+		If(SexActToInt == 1 && ProfessionLevel[1] < 7)
+			Sexperience = Math.Ceiling(0.7 * ProfessionLevel[1] + 0.15 * ProfessionLevel[2] + 0.15 * ProfessionLevel[3]) 
+		ElseIf(SexActToInt == 2 && ProfessionLevel[2] < 6)
+			Sexperience = Math.Ceiling(0.7 * ProfessionLevel[2] + 0.15 * ProfessionLevel[1] + 0.15 * ProfessionLevel[3])
+		ElseIf(SexActToInt == 3 && ProfessionLevel[3] < 6)
+			Sexperience = Math.Ceiling(0.7 * ProfessionLevel[3] + 0.15 * ProfessionLevel[1] + 0.15 * ProfessionLevel[2])
 		EndIf
 
 		If(Sexperience > 7)
@@ -165,60 +248,53 @@ Int Function EarnReward(Actor akClient, Int auiJob)
 		ElseIf(Sexperience < 1)
 			Sexperience = 1
 		EndIf
-	
-		GoldAmount = Sexperience * GetIntValue(None, "APPS.Settings.WhoreBasePayment")
+
+		GoldAmount = Sexperience * GetIntValue(None, SUKEY_WHORE_BASE_PAYMENT)
 
 		If(SexActToInt == 1)
-			GoldAmount *= GetFloatValue(None, "APPS.Settings.OralMod")
+			GoldAmount *= GetIntValue(None, SUKEY_ORAL_MOD)
 		ElseIf(SexActToInt == 2)
-			GoldAmount *= GetFloatValue(None, "APPS.Settings.VaginalMod")
+			GoldAmount *= GetIntValue(None, SUKEY_VAGINAL_MOD)
 		ElseIf(SexActToInt == 3)
-			GoldAmount *= GetFloatValue(None, "APPS.Settings.AnalMod")
+			GoldAmount *= GetIntValue(None, SUKEY_ANAL_MOD)
 		EndIf
-		
+
 		If(akClient.GetFactionRank(DBIdentifiedFaction) == 1)
-			GoldAmount += GoldAmount * GetFloatValue(None, "APPS.Settings.DragonbornBonus")
+			GoldAmount += GoldAmount * GetIntValue(None, SUKEY_DRAGONBORN_BONUS)
 		EndIf
 
 		;If(APPS_SQ01.IsStageDone(40))
 		;	GoldAmount += GoldAmount * Var.WhoreBonus.GetValue()
 		;EndIf
 
-		If(IsPlayerWhore)
-			AdjustIntValue(None, "APPS.InnkeeperShare.", Math.Floor(GoldAmount / 2))
+		If(GetIntValue(None, SUKEY_IS_PLAYER_WHORE))
+			AdjustIntValue(None, SUKEY_INNKEEPER_SHARE, Math.Floor(GoldAmount / 2))
 		EndIf
 	ElseIf(auiJob == 3)
-		GoldAmount = Utility.RandomInt(GetIntValue(None, "APPS.Settings.MinDanceReward"), GetIntValue(None, "APPS.Settings.MaxDanceReward"))
-		
-		If(IsPlayerWhore)
-			AdjustIntValue(None, InnkeeperShare, Math.Floor(GoldAmount / 2))
+		GoldAmount = Utility.RandomInt(GetIntValue(None, SUKEY_MIN_DANCE_REWARD), GetIntValue(None, SUKEY_MAX_DANCE_REWARD))
+
+		If(GetIntValue(None, SUKEY_IS_PLAYER_WHORE))
+			AdjustIntValue(None, SUKEY_INNKEEPER_SHARE, Math.Floor(GoldAmount / 2))
 		EndIf
 	EndIf
 
 	If(GoldAmount > ClientGoldLeft)
 		GoldAmount = ClientGoldLeft
 		ReturnValue = 1
-	ElseIf(IsGivingAllGold && GoldAmount > ClientGoldLeft)
+	ElseIf(HasIntValue(None, SUKEY_IS_GIVING_ALL_GOLD) && GoldAmount > ClientGoldLeft)
 		GoldAmount = ClientGoldLeft
 		ReturnValue = 2
-	ElseIf(IsGivingAllGold && GoldAmount <= ClientGoldLeft)
+	ElseIf(HasIntValue(None, SUKEY_IS_GIVING_ALL_GOLD) && GoldAmount <= ClientGoldLeft)
 		GoldAmount = ClientGoldLeft
 		ReturnValue = 3
 	EndIf
-	
+
 	PlayerRef.AddItem(Septims, Math.Ceiling(GoldAmount))
 	akClient.RemoveItem(Septims, Math.Ceiling(GoldAmount))
-	IsGivingAllGold = False
-	UnsetIntValue(None, Bill)
+	UnsetIntValue(None, SUKEY_IS_GIVING_ALL_GOLD)
+
 	Return ReturnValue
 EndFunction
-;Rewarding the player for a successful completed task
-;Return value 0: Player received expected sum
-;ReturnValue 1: Player received only what client had left
-;ReturnValue 2: Player received all gold from client, still was less than expected
-;ReturnValue 3: Player received all gold from client, much more than expected
-;TODO: CONSIDER THE RETURNVALUE
-
 
 ;Prepares and calls SexLab Sex scenes
 ;TODO: Currently only 2 sexpartners, increase to at least 5
@@ -260,7 +336,7 @@ EndFunction
 ;Currently only used for an alternative for beggars
 Function MakeFriends(Actor akNPC, Actor akPlayer)
 	Int RelationShip = akNPC.GetRelationshipRank(akPlayer)
-	
+
 	If(RelationShip <= 0)
 		akNPC.SetRelationshipRank(akPlayer, RelationShip + 1)
 	EndIf
@@ -343,7 +419,6 @@ Function AddSatisfiedClient(Int auiTask, Actor akClient)
 	EndIf
 
 	AddToStatistics(auiTask)
-	RS.ModRelationshipPoints(akClient, 5)
 EndFunction
 
 ;On a failed request this function casts a spell to stop the same client asking a new request
@@ -355,9 +430,8 @@ Function AddDissatisfiedClient(Int auiTask, Actor akClient)
 	ElseIf(auiTask == 3)
 		DispleasedByNotDancingSpell.Cast(akClient)
 	EndIf
-	
+
 	AddToStatistics(auiTask, False)
-	RS.ModRelationshipPoints(akClient, -10)
 EndFunction
 
 ;If player successfully declined a request w/o making the client unhappy
@@ -369,78 +443,73 @@ EndFunction
 ;Stores requests and their result, can be seen under APPS --> Statistics
 Function AddToStatistics(Int auiStat, Bool abSuccess = True, Bool abSameGuest = False)
 	If(auiStat == 1)
-		AdjustIntValue(None, "APPS.Stats.FoodOrdersRequested", 1)
-		AdjustIntValue(None, "APPS.TotalFoodOrdersRequested", 1)
+		AdjustIntValue(None, SUKEY_FOOD_ORDERS_REQUESTED, 1)
+		AdjustIntValue(None, SUKEY_TOTAL_FOOD_ORDERS_REQUESTED, 1)
 
 		If(abSuccess)
-			AdjustIntValue(None, "APPS.Stats.FoodOrdersSucceeded", 1)
-			AdjustIntValue(None, "APPS.Stats.TotalFoodOrdersSucceeded", 1)
+			AdjustIntValue(None, SUKEY_FOOD_ORDERS_SUCCEEDED, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_FOOD_ORDERS_SUCCEEDED, 1)
 		Else
-			AdjustIntValue(None, "APPS.Stats.FoodOrdersFailed", 1)
-			FoodOrdersFailed = GetIntValue(None, "APPS.Stats.FoodOrdersFailed")
-			AdjustIntValue(None, "APPS.Stats.TotalFoodOrdersFailed", 1)
+			AdjustIntValue(None, SUKEY_FOOD_ORDERS_FAILED, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_FOOD_ORDERS_FAILED, 1)
 		EndIf
 	ElseIf(auiStat == 2)
-		AdjustIntValue(None, "APPS.Stats.SexOrdersRequested", 1)
-		AdjustIntValue(None, "APPS.Stats.TotalSexOrdersRequested", 1)
+		AdjustIntValue(None, SUKEY_SEX_ORDERS_REQUESTED, 1)
+		AdjustIntValue(None, SUKEY_TOTAL_SEX_ORDERS_REQUESTED, 1)
 
 		If(abSuccess)
-			AdjustIntValue(None, "APPS.Stats.SexOrdersAccepted", 1)
-			AdjustIntValue(None, "APPS.Stats.TotalSexOrdersAccepted", 1)
+			AdjustIntValue(None, SUKEY_SEX_ORDERS_ACCEPTED, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_SEX_ORDERS_ACCEPTED, 1)
 		Else
-			AdjustIntValue(None, "APPS.Stats.SexOrdersDeclined", 1)
-			AdjustIntValue(None, "APPS.Stats.TotalSexOrdersDeclined", 1)
+			AdjustIntValue(None, SUKEY_SEX_ORDERS_DECLINED, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_SEX_ORDERS_DECLINED, 1)
 		EndIf
 	ElseIf(auiStat == 3)
-		AdjustIntValue(None, "APPS.Stats.DanceOrdersRequested", 1)
-		AdjustIntValue(None, "APPS.Stats.TotalDanceOrdersRequested", 1)
+		AdjustIntValue(None, SUKEY_DANCE_ORDERS_REQUESTED, 1)
+		AdjustIntValue(None, SUKEY_TOTAL_DANCE_ORDERS_REQUESTED, 1)
 
 		If(abSuccess)
-			AdjustIntValue(None, "APPS.Stats.DanceOrdersAccepted", 1)
-			AdjustIntValue(None, "APPS.Stats.TotalDanceOrdersAccepted", 1)
+			AdjustIntValue(None, SUKEY_DANCE_ORDERS_ACCEPTED, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_DANCE_ORDERS_ACCEPTED, 1)
 		Else
-			AdjustIntValue(None, "APPS.Stats.DanceOrdersDeclined", 1)
-			AdjustIntValue(None, "APPS.Stats.TotalDanceOrdersDeclined", 1)
+			AdjustIntValue(None, SUKEY_DANCE_ORDERS_DECLINED, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_DANCE_ORDERS_DECLINED, 1)
 		EndIf
 	EndIf
 
 	If(!abSameGuest)
-		AdjustIntValue(None, "APPS.Stats.GuestsServed", 1)
-		AdjustIntValue(None, "APPS.Stats.TotalGuestsServed", 1)
+		AdjustIntValue(None, SUKEY_GUESTS_SERVED, 1)
+		AdjustIntValue(None, SUKEY_TOTAL_GUESTS_SERVED, 1)
 
 		If(abSuccess)
-			AdjustIntValue(None, "APPS.Stats.GuestsHappy", 1)
-			AdjustIntValue(None, "APPS.Stats.TotalGuestsHappy", 1)
+			AdjustIntValue(None, SUKEY_GUESTS_HAPPY, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_GUESTS_HAPPY, 1)
 		Else
-			AdjustIntValue(None, "APPS.Stats.GuestsUnhappy", 1)
-			AdjustIntValue(None, "APPS.Stats.TotalGuestsUnhappy", 1)
+			AdjustIntValue(None, SUKEY_GUESTS_UNHAPPY, 1)
+			AdjustIntValue(None, SUKEY_TOTAL_GUESTS_UNHAPPY, 1)
 		EndIf
 	EndIf
 EndFunction
 
-;/
-Function SkillLevelDifference(Actor akPlayer, Actor akClient, String akSexAct)
-	Var.SexSkillDifference = SexLab.Stats.GetSkillLevel(akPlayer, akSexAct) - SexLab.Stats.GetSkillLevel(akClient, akSexAct)
+Function SkillLevelDifference(Actor akClient, String akSexAct)
+	SexSkillDifference = SexLab.Stats.GetSkillLevel(PlayerRef, akSexAct) - SexLab.Stats.GetSkillLevel(akClient, akSexAct)
 EndFunction
-/;
 
 ;On stopping the quest, this call will reset all necessary variables so this quest can be started fresh
 Function ResetClients()
-	UnsetIntValue(None, "APPS.Stats.HoursWorked")
-	UnsetIntValue(None, "APPS.Stats.DanceOrdersDeclined")
-	UnsetIntValue(None, "APPS.Stats.DanceOrdersRequested")
-	UnsetIntValue(None, "APPS.Stats.DanceOrdersAccepted")
-	UnsetIntValue(None, "APPS.Stats.FoodOrdersFailed")
-	FoodOrdersFailed = 0
-	UnsetIntValue(None, "APPS.Stats.FoodOrdersRequested")
-	UnsetIntValue(None, "APPS.Stats.FoodOrdersSucceeded")
-	UnsetIntValue(None, "APPS.Stats.SexOrdersDeclined")
-	UnsetIntValue(None, "APPS.Stats.SexOrdersRequested")
-	UnsetIntValue(None, "APPS.Stats.SexOrdersAccepted")
-	UnsetIntValue(None, "APPS.Stats.GuestsServed")
-	UnsetIntValue(None, "APPS.Stats.GuestsHappy")
-	UnsetIntValue(None, "APPS.Stats.GuestsUnhappy")
-	UnsetIntValue(None, "APPS.InnkeeperShare")
+	UnsetIntValue(None, SUKEY_DANCE_ORDERS_DECLINED)
+	UnsetIntValue(None, SUKEY_DANCE_ORDERS_ACCEPTED)
+	UnsetIntValue(None, SUKEY_DANCE_ORDERS_REQUESTED)
+	UnsetIntValue(None, SUKEY_FOOD_ORDERS_REQUESTED)
+	UnsetIntValue(None, SUKEY_FOOD_ORDERS_SUCCEEDED)
+	UnsetIntValue(None, SUKEY_FOOD_ORDERS_FAILED)
+	UnsetIntValue(None, SUKEY_SEX_ORDERS_REQUESTED)
+	UnsetIntValue(None, SUKEY_SEX_ORDERS_DECLINED)
+	UnsetIntValue(None, SUKEY_SEX_ORDERS_ACCEPTED)
+	UnsetIntValue(None, SUKEY_GUESTS_SERVED)
+	UnsetIntValue(None, SUKEY_GUESTS_HAPPY)
+	UnsetIntValue(None, SUKEY_GUESTS_UNHAPPY)
+	UnsetIntValue(None, SUKEY_INNKEEPER_SHARE)
 EndFunction
 
 ;Cooldowns necessary to progress the storyline and to simulate restings
@@ -452,11 +521,11 @@ Function SetCooldowns(Int auiCDTask)
 		IsWhoreJobBeginOnCD = True
 		WhoreJobBeginCD = Utility.GetCurrentGameTime()
 	EndIf
-	
+
 	RegisterForSingleUpdateGameTime(0.5)
 EndFunction
 
 ;If player could agree with client to give all his gold on a successful task
 Function SetIsGivingAllGold()
-	IsGivingAllGold = True
+	SetIntValue(None, SUKEY_IS_GIVING_ALL_GOLD, 1)
 EndFunction

@@ -7,7 +7,7 @@ Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 kmyQuest.IsOrderNoted = False
-GetOwningQuest().SetStage(10)
+GetOwningQuest().SetStage(20)
 ;END CODE
 EndFunction
 ;END FRAGMENT

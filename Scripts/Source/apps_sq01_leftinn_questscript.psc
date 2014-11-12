@@ -2,9 +2,9 @@
 ;NEXT FRAGMENT INDEX 2
 Scriptname APPS_SQ01_LeftInn_QuestScript Extends Quest Hidden
 
-;BEGIN ALIAS PROPERTY PC
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_PC Auto
+;BEGIN ALIAS PROPERTY Tavern
+;ALIAS PROPERTY TYPE LocationAlias
+LocationAlias Property Alias_Tavern Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Innkeeper
@@ -22,16 +22,17 @@ EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-APPS_Controller_Variables Property Var Auto
-GlobalVariable Property InnkeeperShare Auto
+Import StorageUtil
+
+Actor Property PlayerRef Auto
 LocationAlias Property Inn  Auto 
 Message Property LeftInnMsg  Auto  
 Quest Property APPS_SQ01  Auto 
 
 Event OnUpdate()
-	Int Bounty = (Var.InnkeeperShare.GetValueInt() + Var.Bill) * 2
+	Int Bounty = (GetIntValue(None, "APPS.InnkeeperShare") + GetIntValue(None, "APPS.Bill")) * 2
 
-	If(Alias_PC.GetActorRef().GetCurrentLocation() != Inn.GetLocation())
+	If(PlayerRef.GetCurrentLocation() != Inn.GetLocation())
 		If(Bounty > 0)
 			Alias_Innkeeper.GetActorRef().GetCrimeFaction().SetCrimeGold(Bounty)
 		EndIf

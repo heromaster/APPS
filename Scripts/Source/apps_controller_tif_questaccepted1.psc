@@ -1,5 +1,5 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 2
+;NEXT FRAGMENT INDEX 1
 Scriptname APPS_Controller_TIF_QuestAccepted1 Extends TopicInfo Hidden
 
 ;BEGIN FRAGMENT Fragment_0

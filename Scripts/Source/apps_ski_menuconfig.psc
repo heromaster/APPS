@@ -1,5 +1,4 @@
 Scriptname APPS_SKI_MenuConfig Extends SKI_ConfigBase
-Import GlobalVariable
 Import StorageUtil
 
 String AutoSave = "APPS.Settings.AutoSave"
