@@ -6,9 +6,12 @@ Scriptname APPS_Controller_TIF_GiveRulesBook Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-GetOwningQuest().SetStage(30)
+PlayerRef.AddItem(Alias_InnLawsBook.GetRef())
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
+Actor Property PlayerRef Auto
+ReferenceAlias Property Alias_InnLawsBook Auto
+

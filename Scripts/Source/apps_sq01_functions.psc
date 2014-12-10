@@ -1,66 +1,40 @@
 Scriptname APPS_SQ01_Functions Extends Quest  Conditional
 Import StorageUtil
 
-Bool IsHadBreak
-Bool IsQuestStopping
-Int Property CurrentStage Auto Hidden Conditional
-Class Property Beggar Auto
-Message Property WagesAddedMsg Auto
-MiscObject Property Septims Auto
-ReferenceAlias Property Alias_TavernGuest Auto
-;-------------------------------------------------------
-;	Frameworks
-;-------------------------------------------------------
-APPS_Controller_SharedFunctions Property Controller Auto
 SexLabFramework Property SexLab Auto
-;-------------------------------------------------------
-;	Variables for Dancing task
-;-------------------------------------------------------
-Bool Property IsHadDancedForBeggar = False Auto Hidden Conditional
 
-;-------------------------------------------------------
-;	Variables for Tavernjob task
-;-------------------------------------------------------
-Bool Property IsCorrectFoodOrder = False Auto Hidden Conditional
-Bool Property IsOrderNoted = False Auto Hidden Conditional
+Class Property Beggar Auto
+MagicEffect Property RefreshGoldEffect Auto
+Message Property WagesAddedMessage Auto
+MiscObject Property Septims Auto
+ReferenceAlias Property Alias_Patron Auto
+Spell Property RefreshGoldSpell Auto
+
+Bool Property IsCorrectFoodOrder Auto Conditional Hidden
+Bool Property IsHadBreak Auto Conditional Hidden
+Bool Property IsOrderNoted Auto Conditional Hidden
+Bool Property IsQuestStopping Auto Conditional Hidden
+Int Property CurrentStage Auto Conditional Hidden
+Int Property HoursWorked Auto Conditional Hidden
 Int Property Orders Auto Conditional Hidden
-Int Property HoursWorked Auto Hidden
-Float Property Satisfaction Auto Hidden
-;-------------------------------------------------------
-;	Variables for Sexorder task
-;-------------------------------------------------------
-Bool Property IsInDistance Auto Conditional
-Bool Property IsHadSexWithBeggar = False Auto Conditional
+String Property SUKEY_WAGES = "APPS.SQ01.Wages" AutoReadOnly Hidden
+String Property SUKEY_PAYMENT = "APPS.Settings.Payment" AutoReadOnly Hidden
+String Property SUKEY_HOURS_TO_WORK = "APPS.Settings.HoursToWork" AutoReadOnly Hidden
+String Property SUKEY_HOURS_TO_WORK_EXPECTED = "APPS.Settings.HoursToWorkExpected" AutoReadOnly Hidden
+String Property SUKEY_ORDER_LIST = "APPS.SQ01.OrderList" AutoReadOnly Hidden
+String Property SUKEY_SUPPOSED_ORDER_LIST = "APPS.SQ01.SupposedOrderList" AutoReadOnly Hidden
 
-;-------------------------------------------------------
-;	Variables for different events
-;-------------------------------------------------------
-Bool Property IsPickPocketFailed Auto Conditional
-Bool Property IsHadSexBefore Auto Conditional
-Bool Property IsSameCustomer Auto Conditional
-Int Property AmountOfSexRounds Auto Conditional
-
-;-------------------------------------------------------
-;	Events
-;-------------------------------------------------------
-Event OnUpdateGameTime()	
-	If(CurrentStage == 120)
-		Return
-	EndIf
-
-	If(HoursWorked >= GetIntValue(None, "APPS.Settings.HoursToWork") && !IsHadBreak)
-		;SetStage(xx) ;Hulda invites player to have a break
-	EndIf
-
+Event OnUpdateGameTime()
 	HoursWorked += 1
-	AdjustIntValue(None, "APPS.Wages", GetIntValue(None, "APPS.Settings.Payment"))
-	WagesAddedMsg.Show(GetIntValue(None, "APPS.Settings.Payment"))
+	AdjustIntValue(None, SUKEY_WAGES, GetIntValue(None,  SUKEY_PAYMENT))
 
-	If(HoursWorked >= GetIntValue(None, "APPS.Settings.HoursToWork"))
-		If(CurrentStage > 10)
-			IsQuestStopping = True
-		EndIf
+	WagesAddedMessage.Show(GetIntValue(None, SUKEY_PAYMENT))
 
+	If(HoursWorked >= GetIntValue(None, SUKEY_HOURS_TO_WORK_EXPECTED) && !IsHadBreak)
+		IsQuestStopping = True
+		IsHadBreak = True
+	ElseIf(HoursWorked >= GetIntValue(None, SUKEY_HOURS_TO_WORK))
+		IsQuestStopping = True
 		Return
 	EndIf
 
@@ -68,38 +42,51 @@ Event OnUpdateGameTime()
 EndEvent
 
 Function SetupCustomer(Actor akCustomer)
-	Controller.CheckGold(akCustomer)
-	Alias_TavernGuest.ForceRefTo(akCustomer)
+	RefreshGold(akCustomer)
+
+	Alias_Patron.ForceRefTo(akCustomer)
+
 EndFunction
-;-------------------------------------------------------
-;	Functions for Tavern Job task
-;-------------------------------------------------------
-Function AddOrderedItems(Actor akPlayer)
+
+Function RefreshGold(Actor akClient)
 	Int i = 0
-	
-	If(IsOrderNoted)
-		While(i < FormListCount(None, "APPS.OrderList"))
-			akPlayer.AddItem(FormListGet(None, "APPS.OrderList", i))
-			AdjustIntValue(None, "APPS.Wages", FormListGet(None, "APPS.OrderList", i).GetGoldValue())
+	Int[] ProfessionLevel = New Int[3]
+	Int HighestSexSkill = 0
 
-			i += 1
-		EndWhile
-	Else
-		While(i < FormListCount(None, "APPS.SupposedOrderList"))
-			akPlayer.AddItem(FormListGet(None, "APPS.OrderList", i))
-			AdjustIntValue(None, "APPS.Wages", FormListGet(None, "APPS.OrderList", i).GetGoldValue())
-
-			i += 1
-		EndWhile
+	If(akClient.GetActorBase().GetClass() == Beggar)
+		Return
 	EndIf
-EndFunction
-
-Function DismissFollower(Actor akFollower)
-	If(akFollower == None)
+	
+	If(akClient.HasMagicEffect(RefreshGoldEffect))
 		Return
 	Else
-		akFollower.EvaluatePackage()
+		ProfessionLevel[0] = SexLab.GetPlayerStatLevel("Oral") + 1
+		ProfessionLevel[1] = SexLab.GetPlayerStatLevel("Vaginal") + 1
+		ProfessionLevel[2] = SexLab.GetPlayerStatLevel("Anal") + 1
+		
+		While(i <= ProfessionLevel.Length - 1)
+			If(ProfessionLevel[i] > HighestSexSkill)
+				HighestSexSkill = ProfessionLevel[i]
+			EndIf
+			
+			i += 1
+		EndWhile
+
+		If(akClient.GetGoldAmount() < 30)
+			If(akClient.IsChild())
+				akClient.AddItem(Septims, 25)
+			Else
+				akClient.AddItem(Septims, 85 * HighestSexSkill)
+			EndIf
+		EndIf
+
+		RefreshGoldSpell.Cast(akClient)
 	EndIf
+EndFunction
+
+Function FillOrder(Potion akOrderedFood, Int auiOrderNumber)
+	FormListAdd(None, "APPS.SQ01.Order", akOrderedFood)
+	Orders += 1
 EndFunction
 
 Function CheckOrder()
@@ -110,13 +97,13 @@ Function CheckOrder()
 		Return
 	EndIf
 	
-	If(GetIntValue(None, "APPS.SupposedOrders") < Orders)
+	If(FormListCount(None, SUKEY_SUPPOSED_ORDER_LIST) < FormListCount(None, SUKEY_ORDER_LIST))
 		IsCorrectFoodOrder = False
 		Return
 	EndIf
 	
-	While(i < GetIntValue(None, "APPS.SupposedOrders"))
-		If(FormListGet(None, "APPS.SupposedOrderList", i) != FormListGet(None, "APPS.OrderList", i))
+	While(i < FormListCount(None, SUKEY_SUPPOSED_ORDER_LIST))
+		If(FormListGet(None, SUKEY_SUPPOSED_ORDER_LIST, i) != FormListGet(None, SUKEY_ORDER_LIST, i))
 			IsCorrectFoodOrder = False
 			Return
 		EndIf
@@ -125,59 +112,4 @@ Function CheckOrder()
 	EndWhile
 	
 	IsCorrectFoodOrder = True
-EndFunction
-
-Function FillOrder(Int auiOrderNumber, Potion akOrderedFood)
-	FormListAdd(None, "APPS.OrderList", akOrderedFood)
-	Orders += 1
-EndFunction
-
-Function FillSupposedOrder(Int auiOrderNumber, Potion akSupposedOrderedFood)
-	FormListAdd(None, "APPS.OrderList", akSupposedOrderedFood)
-	AdjustIntValue(None, "APPS.SupposedOrders", 1)
-EndFunction
-
-Function DeductWages()
-	AdjustIntValue(None, "APPS.Wages", -(GetIntValue(None, "APPS.Bill")))
-	AdjustIntValue(None, "APPS.InnkeeperShare", GetIntValue(None, "APPS.Bill"))
-	UnsetIntValue(None, "APPS.Bill")
-EndFunction
-
-Function CutWages()
-	SetIntValue(None, "APPS.Wages", Math.Floor(GetIntValue(None, "APPS.Wages") * 2 / 3))
-EndFunction
-
-Function RemoveOrderItems(Actor akPlayer)
-	Int i = 0
-	
-	If(IsOrderNoted)
-		While(i < Orders)
-			akPlayer.RemoveItem(FormListGet(None, "APPS.OrderList", i))
-			
-			i += 1
-		EndWhile
-	Else
-		While(i < GetIntValue(None, "APPS.SupposedOrders"))
-			akPlayer.RemoveItem(FormListGet(None, "APPS.SupposedOrderList", i))
-		
-			i += 1
-		EndWhile
-	EndIf
-EndFunction
-
-Function PayOrReceiveGold(Actor akSpeaker, Actor akPlayer)
-	Int ToPay = GetIntValue(None, "APPS.Wages") - GetIntValue(None, "APPS.InnkeeperShare")
-
-	If(ToPay > 0)
-		akPlayer.AddItem(Septims, ToPay)
-		akSpeaker.RemoveItem(Septims, ToPay)
-	Else
-		ToPay = -ToPay
-		akPlayer.RemoveItem(Septims, ToPay)
-		akSpeaker.AddItem(Septims, ToPay)
-	EndIf
-EndFunction
-
-Function CreateSummary()
-		Satisfaction = (GetIntValue(None, "APPS.Stats.GuestsHappy") As Float) / (GetIntValue(None, "APPS.Stats.GuestsServed") As Float) * 100
 EndFunction
