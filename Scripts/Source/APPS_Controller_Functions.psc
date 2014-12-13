@@ -1,6 +1,7 @@
 Scriptname APPS_Controller_Functions Extends Quest Conditional
 Import StorageUtil
 
+Int Property FoodOrdersFailed Auto Conditional Hidden
 Int Property Satisfaction Auto Conditional Hidden
 Int Property TavernJobStorylineProgress Auto Conditional Hidden
 
@@ -8,6 +9,7 @@ String Property EXCLUDED_REQUESTS = "APPS.SQ01.ExcludedRequests" AutoReadOnly Hi
 String Property FOOD_ORDERS_REQUESTED = "APPS.Stats.FoodOrdersRequested" AutoReadOnly Hidden
 String Property FOOD_ORDERS_SUCCEEDED = "APPS.Stats.FoodOrdersSucceeded" AutoReadOnly Hidden
 String Property FOOD_ORDERS_FAILED = "APPS.Stats.FoodOrdersFailed" AutoReadOnly Hidden
+String Property SEX_ACT = "APPS.SexAct" AutoReadOnly Hidden
 String Property SEX_ORDERS_REQUESTED = "APPS.Stats.SexOrdersRequested" AutoReadOnly Hidden
 String Property SEX_ORDERS_ACCEPTED = "APPS.Stats.SexOrdersAccepted" AutoReadOnly Hidden
 String Property SEX_ORDERS_DECLINED = "APPS.Stats.SexOrdersDeclined" AutoReadOnly Hidden
@@ -41,6 +43,7 @@ Function AddToStats(Int auiStat, Bool abSuccess = True, Bool abSameGuest = False
 		Else
 			AdjustIntValue(None, FOOD_ORDERS_FAILED, 1)
 			AdjustIntValue(None, TOTAL_FOOD_ORDERS_FAILED, 1)
+			FoodOrdersFailed += 1
 		EndIf
 	ElseIf(auiStat == 2)
 		AdjustIntValue(None, SEX_ORDERS_REQUESTED, 1)
@@ -84,4 +87,30 @@ EndFunction
 
 Function ExcludeFromSatisfactionStat()
 	AdjustIntValue(None, EXCLUDED_REQUESTS, 1)
+EndFunction
+
+Function ClearSexAct(Actor akClient)
+	FormListClear(akClient, SEX_ACT)
+	StringListClear(akClient, SEX_ACT)
+	IntListClear(akClient, SEX_ACT)
+EndFunction
+
+Function AddToSexAct(Actor akInitiator, Actor[] akParticipants, Int auiSexAct)
+	Int i
+
+	While(i < akParticipants.Length)
+		FormListAdd(akInitiator, SEX_ACT, akParticipants[i])
+
+		i += 1
+	EndWhile
+
+	If(auiSexAct == 1)
+		StringListAdd(akInitiator, SEX_ACT, "Oral")
+	ElseIf(auiSexAct == 2)
+		StringListAdd(akInitiator, SEX_ACT, "Vaginal")
+	ElseIf(auiSexAct == 3)
+		StringListAdd(akInitiator, SEX_ACT, "Anal")
+	EndIf
+
+	IntListAdd(akInitiator, SEX_ACT, auiSexAct)
 EndFunction

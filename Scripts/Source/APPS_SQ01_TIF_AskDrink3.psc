@@ -6,7 +6,7 @@ Scriptname APPS_SQ01_TIF_AskDrink3 Extends TopicInfo Hidden
 Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-kmyQuest.FillOrder(Drink, 1)
+kmyQuest.FillOrder(Drink)
 ;END CODE
 EndFunction
 ;END FRAGMENT

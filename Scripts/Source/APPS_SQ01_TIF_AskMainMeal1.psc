@@ -6,7 +6,7 @@ Scriptname APPS_SQ01_TIF_AskMainMeal1 Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-kmyQuest.FillOrder(MainMeal, 2)
+kmyQuest.FillOrder(MainMeal)
 ;END CODE
 EndFunction
 ;END FRAGMENT

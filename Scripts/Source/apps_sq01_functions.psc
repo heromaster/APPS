@@ -3,6 +3,7 @@ Import StorageUtil
 
 SexLabFramework Property SexLab Auto
 
+Actor Property PlayerRef Auto
 Class Property Beggar Auto
 MagicEffect Property RefreshGoldEffect Auto
 Message Property WagesAddedMessage Auto
@@ -17,23 +18,26 @@ Bool Property IsQuestStopping Auto Conditional Hidden
 Int Property CurrentStage Auto Conditional Hidden
 Int Property HoursWorked Auto Conditional Hidden
 Int Property Orders Auto Conditional Hidden
-String Property SUKEY_WAGES = "APPS.SQ01.Wages" AutoReadOnly Hidden
-String Property SUKEY_PAYMENT = "APPS.Settings.Payment" AutoReadOnly Hidden
-String Property SUKEY_HOURS_TO_WORK = "APPS.Settings.HoursToWork" AutoReadOnly Hidden
-String Property SUKEY_HOURS_TO_WORK_EXPECTED = "APPS.Settings.HoursToWorkExpected" AutoReadOnly Hidden
-String Property SUKEY_ORDER_LIST = "APPS.SQ01.OrderList" AutoReadOnly Hidden
-String Property SUKEY_SUPPOSED_ORDER_LIST = "APPS.SQ01.SupposedOrderList" AutoReadOnly Hidden
+
+String Property BILL = "APPS.SQ01.Bill" AutoReadOnly Hidden
+String Property HOURS_TO_WORK = "APPS.Settings.HoursToWork" AutoReadOnly Hidden
+String Property HOURS_TO_WORK_EXPECTED = "APPS.Settings.HoursToWorkExpected" AutoReadOnly Hidden
+String Property ORDER_LIST = "APPS.SQ01.OrderList" AutoReadOnly Hidden
+String Property PAYMENT = "APPS.Settings.Payment" AutoReadOnly Hidden
+String Property SUPPOSED_ORDER_LIST = "APPS.SQ01.SupposedOrderList" AutoReadOnly Hidden
+String Property SUPPOSED_ORDERS = "APPS.SQ01.SupposedOrders" AutoReadOnly Hidden
+String Property WAGES = "APPS.SQ01.Wages" AutoReadOnly Hidden
 
 Event OnUpdateGameTime()
 	HoursWorked += 1
-	AdjustIntValue(None, SUKEY_WAGES, GetIntValue(None,  SUKEY_PAYMENT))
+	AdjustIntValue(None, WAGES, GetIntValue(None,  PAYMENT))
 
-	WagesAddedMessage.Show(GetIntValue(None, SUKEY_PAYMENT))
+	WagesAddedMessage.Show(GetIntValue(None, PAYMENT))
 
-	If(HoursWorked >= GetIntValue(None, SUKEY_HOURS_TO_WORK_EXPECTED) && !IsHadBreak)
+	If(HoursWorked >= GetIntValue(None, HOURS_TO_WORK_EXPECTED) && !IsHadBreak)
 		IsQuestStopping = True
 		IsHadBreak = True
-	ElseIf(HoursWorked >= GetIntValue(None, SUKEY_HOURS_TO_WORK))
+	ElseIf(HoursWorked >= GetIntValue(None, HOURS_TO_WORK))
 		IsQuestStopping = True
 		Return
 	EndIf
@@ -84,9 +88,14 @@ Function RefreshGold(Actor akClient)
 	EndIf
 EndFunction
 
-Function FillOrder(Potion akOrderedFood, Int auiOrderNumber)
-	FormListAdd(None, "APPS.SQ01.Order", akOrderedFood)
+Function FillOrder(Potion akOrderedFood)
+	FormListAdd(None, ORDER_LIST, akOrderedFood)
 	Orders += 1
+EndFunction
+
+Function FillSupposedOrder(Potion akSupposedOrderedFood)
+	FormListAdd(None, SUPPOSED_ORDER_LIST, akSupposedOrderedFood)
+	AdjustIntValue(None, SUPPOSED_ORDERS, 1)
 EndFunction
 
 Function CheckOrder()
@@ -97,13 +106,13 @@ Function CheckOrder()
 		Return
 	EndIf
 	
-	If(FormListCount(None, SUKEY_SUPPOSED_ORDER_LIST) < FormListCount(None, SUKEY_ORDER_LIST))
+	If(FormListCount(None, SUPPOSED_ORDER_LIST) < Orders)
 		IsCorrectFoodOrder = False
 		Return
 	EndIf
 	
-	While(i < FormListCount(None, SUKEY_SUPPOSED_ORDER_LIST))
-		If(FormListGet(None, SUKEY_SUPPOSED_ORDER_LIST, i) != FormListGet(None, SUKEY_ORDER_LIST, i))
+	While(i < FormListCount(None, SUPPOSED_ORDER_LIST))
+		If(FormListGet(None, SUPPOSED_ORDER_LIST, i) != FormListGet(None, ORDER_LIST, i))
 			IsCorrectFoodOrder = False
 			Return
 		EndIf
@@ -112,4 +121,24 @@ Function CheckOrder()
 	EndWhile
 	
 	IsCorrectFoodOrder = True
+EndFunction
+
+Function AddOrderedItems()
+	Int i = 0
+	
+	If(IsOrderNoted)
+		While(i < Orders)
+			PlayerRef.AddItem(FormListGet(None, ORDER_LIST, i))
+			AdjustIntValue(None, BILL, (FormListGet(None, ORDER_LIST, i)).GetGoldValue())
+
+			i += 1
+		EndWhile
+	Else
+		While(i < FormListCount(None, SUPPOSED_ORDER_LIST))
+			PlayerRef.AddItem(FormListGet(None, SUPPOSED_ORDER_LIST, i))
+			AdjustIntValue(None, BILL, (FormListGet(None, SUPPOSED_ORDER_LIST, i)).GetGoldValue())
+
+			i += 1
+		EndWhile
+	EndIf
 EndFunction
