@@ -13,4 +13,5 @@ EndFunction
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 APPS_SQ01_Functions Property kmyQuest Auto
+
 Potion Property Drink Auto

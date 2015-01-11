@@ -6,7 +6,7 @@ Scriptname APPS_SQ01_TIF_SexOrderAccepted02 Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-Controller.ClearSexAct(akSpeaker)
+Controller.ClearSexAct()
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -20,7 +20,7 @@ Actor[] Actors = New Actor[2]
 Actors[0] = PlayerRef
 Actors[1] = akSpeaker
 
-Controller.AddToSexAct(akSpeaker, Actors, 3)
+Controller.AddToSexAct(Actors, 3)
 ;END CODE
 EndFunction
 ;END FRAGMENT

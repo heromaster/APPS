@@ -1,7 +1,11 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
 ;NEXT FRAGMENT INDEX 2
 Scriptname APPS_Init_QuestScript Extends APPS_FW_Registrar Hidden
-Import StorageUtil
+
+;BEGIN ALIAS PROPERTY PC
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_PC Auto
+;END ALIAS PROPERTY
 
 ;BEGIN FRAGMENT Fragment_0
 Function Fragment_0()
@@ -10,6 +14,7 @@ RegisterMod()
 RegisterInitQuest(Self, 10)
 RegisterForExceptionModule("APPS")
 RegisterForRelationshipModule()
+SetInfoHandling(True, False)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -25,6 +30,8 @@ If(!SexLab.Stats.HadSex(Brenuin))
 	SexLab.Stats.SetInt(Brenuin, "Oral", Oral)
 	SexLab.Stats.SetInt(Brenuin, "Males", Anal + Oral)
 EndIf
+
+RS.SetSyncMode(Self, HuldaRef, 3)
 
 ;/
 Bool IsDLC1Active = Quest.GetQuest("DLC1Init")
@@ -106,6 +113,9 @@ EndFunction
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 SexLabFramework Property SexLab Auto
+APPS_FW_Relationship Property RS Auto
+
+Actor Property HuldaRef Auto
 
 ;/
 Actor Property Adelaisa Auto
