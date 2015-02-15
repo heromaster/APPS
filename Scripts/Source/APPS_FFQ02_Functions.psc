@@ -1,0 +1,2 @@
+Scriptname APPS_FFQ02_Functions extends Quest  Conditional
+Int Property PunishmentLeadIn Auto Conditional Hidden

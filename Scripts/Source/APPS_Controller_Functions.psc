@@ -57,50 +57,50 @@ MiscObject Property Septims Auto
 Function AddToStats(Int auiStat, Bool abSuccess = True, Bool abSameGuest = False)
 	If(auiStat == 1)
 		AdjustIntValue(None, FOOD_ORDERS_REQUESTED, 1)
-		AdjustIntValue(None, FOOD_ORDERS_REQUESTED, 1)
+		AdjustIntValue(None, FOOD_ORDERS_REQUESTED_TOTAL, 1)
 
 		If(abSuccess)
 			AdjustIntValue(None, FOOD_ORDERS_SUCCEEDED, 1)
-			AdjustIntValue(None, FOOD_ORDERS_SUCCEEDED, 1)
+			AdjustIntValue(None, FOOD_ORDERS_SUCCEEDED_TOTAL, 1)
 		Else
 			AdjustIntValue(None, FOOD_ORDERS_FAILED, 1)
-			AdjustIntValue(None, FOOD_ORDERS_FAILED, 1)
+			AdjustIntValue(None, FOOD_ORDERS_FAILED_TOTAL, 1)
 			FoodOrdersFailed += 1
 		EndIf
 	ElseIf(auiStat == 2)
 		AdjustIntValue(None, SEX_ORDERS_REQUESTED, 1)
-		AdjustIntValue(None, SEX_ORDERS_REQUESTED, 1)
+		AdjustIntValue(None, SEX_ORDERS_REQUESTED_TOTAL, 1)
 
 		If(abSuccess)
 			AdjustIntValue(None, SEX_ORDERS_ACCEPTED, 1)
-			AdjustIntValue(None, SEX_ORDERS_ACCEPTED, 1)
+			AdjustIntValue(None, SEX_ORDERS_ACCEPTED_TOTAL, 1)
 		Else
 			AdjustIntValue(None, SEX_ORDERS_DECLINED, 1)
-			AdjustIntValue(None, SEX_ORDERS_DECLINED, 1)
+			AdjustIntValue(None, SEX_ORDERS_DECLINED_TOTAL, 1)
 		EndIf
 	ElseIf(auiStat == 3)
 		AdjustIntValue(None, DANCE_ORDERS_REQUESTED, 1)
-		AdjustIntValue(None, DANCE_ORDERS_REQUESTED, 1)
+		AdjustIntValue(None, DANCE_ORDERS_REQUESTED_TOTAL, 1)
 
 		If(abSuccess)
 			AdjustIntValue(None, DANCE_ORDERS_ACCEPTED, 1)
-			AdjustIntValue(None, DANCE_ORDERS_ACCEPTED, 1)
+			AdjustIntValue(None, DANCE_ORDERS_ACCEPTED_TOTAL, 1)
 		Else
 			AdjustIntValue(None, DANCE_ORDERS_DECLINED, 1)
-			AdjustIntValue(None, DANCE_ORDERS_DECLINED, 1)
+			AdjustIntValue(None, DANCE_ORDERS_DECLINED_TOTAL, 1)
 		EndIf
 	EndIf
 
 	If(!abSameGuest)
 		AdjustIntValue(None, GUESTS_SERVED, 1)
-		AdjustIntValue(None, GUESTS_SERVED, 1)
+		AdjustIntValue(None, GUESTS_SERVED_TOTAL, 1)
 
 		If(abSuccess)
 			AdjustIntValue(None, GUESTS_HAPPY, 1)
-			AdjustIntValue(None, GUESTS_HAPPY, 1)
+			AdjustIntValue(None, GUESTS_HAPPY_TOTAL, 1)
 		Else
 			AdjustIntValue(None, GUESTS_UNHAPPY, 1)
-			AdjustIntValue(None, GUESTS_UNHAPPY, 1)
+			AdjustIntValue(None, GUESTS_UNHAPPY_TOTAL, 1)
 		EndIf
 	EndIf
 
@@ -135,6 +135,29 @@ Function AddToSexAct(Actor[] akParticipants, Int auiSexAct)
 	EndIf
 
 	SetIntValue(None, SEX_ACT, auiSexAct)
+EndFunction
+
+Function PerformSexAct()
+	sslBaseAnimation[] SexAnimationList
+	Actor[] SexActorList = New Actor[2]
+
+	SexActorList[0] = FormListGet(None, SEX_ACT, 0) As Actor
+	SexActorList[1] = FormListGet(None, SEX_ACT, 1) As Actor
+	SexActorList = SexLab.SortActors(SexActorList)
+
+	If(GetIntValue(None, SEX_ACT) == 1 && ((FormListGet(None, SEX_ACT, 0) As Actor).GetActorBase().GetSex() == 1 && (FormListGet(None, SEX_ACT, 1) As Actor).GetActorBase().GetSex() == 1))
+		SexAnimationList = SexLab.GetAnimationsByTag(2, "Cunnilingus", requireAll = False)
+	Else
+		SexAnimationList = SexLab.GetAnimationsByTag(2, GetIntValue(None, SEX_ACT))
+	EndIf
+
+	sslThreadModel th = SexLab.NewThread()
+	th.AddActor(SexActorList[0])
+	th.AddActor(SexActorList[1])
+	th.SetAnimations(SexAnimationList)
+	th.DisableLeadIn(true)
+	th.SetBedding(0)
+	th.StartThread()
 EndFunction
 
 Function EarnReward(Actor akClient, Int auiTask)
