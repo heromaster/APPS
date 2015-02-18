@@ -6,13 +6,11 @@ Scriptname APPS_FollowerQuest_TIF_StartKissing Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-KissingScene.SendStoryEvent(None, Alias_PC.GetActorRef(), akSpeaker)
+KissingScene.SendStoryEvent(None, PlayerRef, akSpeaker)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-
-Keyword Property KissingScene  Auto  
-
-ReferenceAlias Property Alias_PC  Auto  
+Actor Property PlayerRef Auto
+Keyword Property KissingScene Auto

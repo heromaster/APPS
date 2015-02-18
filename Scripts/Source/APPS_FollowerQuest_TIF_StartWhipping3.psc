@@ -6,15 +6,14 @@ Scriptname APPS_FollowerQuest_TIF_StartWhipping3 Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-DominaFunctions.IsConsensual = True
-WhipScene.SendStoryEvent(None, Alias_PC.GetRef(), akSpeaker)
+(Domina As APPS_Domina_Functions).IsConsensual = True
+WhipScene.SendStoryEvent(None, PlayerRef, akSpeaker)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-APPS_Domina_Functions Property DominaFunctions Auto
-Keyword Property WhipScene  Auto  
-ReferenceAlias Property Alias_PC  Auto  
-
+Actor Property PlayerRef Auto
+Keyword Property WhipScene Auto
+Quest Property Domina Auto
 

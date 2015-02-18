@@ -6,11 +6,10 @@ Scriptname APPS_FollowerQuest_TIF_WaitHere4 Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-kmyQuest.FollowerWait()
-kmyQuest.FollowerWaitCounter += 1
+(GetOwningQuest() As APPS_Follower_Functions).FollowerWait()
+(GetOwningQuest() As APPS_Follower_Functions).FollowerWaitCounter += 1
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-APPS_Follower_Functions Property kmyQuest Auto

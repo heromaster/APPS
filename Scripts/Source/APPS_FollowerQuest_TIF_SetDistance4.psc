@@ -6,10 +6,9 @@ Scriptname APPS_FollowerQuest_TIF_SetDistance4 Extends TopicInfo Hidden
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-kmyQuest.SetFollowerDistance(1)
+(GetOwningQuest() As APPS_Follower_Functions).SetFollowerDistance(1)
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-APPS_Follower_Functions Property kmyQuest Auto

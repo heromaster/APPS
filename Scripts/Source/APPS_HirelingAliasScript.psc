@@ -1,11 +1,11 @@
 Scriptname APPS_HirelingAliasScript extends ReferenceAlias  
 APPS_Follower_Functions Property FollowerFunctions Auto
+Actor Property PlayerRef Auto
 Quest Property APPS_FFQ04 Auto
 Faction Property CurrentHirelingFaction Auto
 Faction Property SubDomRankFaction Auto
 GlobalVariable Property PlayerFollowerCount Auto
 Keyword Property LocationDungeon Auto
-ReferenceAlias Property Alias_PC Auto
 
 Event OnUpdateGameTime()
 	If Self.GetActorRef().GetAV("WaitingforPlayer") == 0
@@ -32,7 +32,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 EndEvent
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
-	If (akTarget == Alias_PC.GetActorRef())
+	If (akTarget == PlayerRef)
 		FollowerFunctions.DismissFollower(0)
 	EndIf
 EndEvent

@@ -13,5 +13,4 @@ EndFunction
 ;END FRAGMENT
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-
-WEAPON Property Whip  Auto  
+Weapon Property Whip Auto

@@ -16,6 +16,7 @@ Bool Property IsCanBeDismissed Auto Conditional Hidden
 Bool Property IsPlayerTurned = False Auto Conditional Hidden
 Int Property FollowerDistance = 2 Auto Conditional Hidden
 Int Property FollowerWaitCounter Auto Conditional Hidden
+Actor Property PlayerRef Auto
 Faction Property CurrentHirelingFaction Auto
 Faction Property DismissedFollowerFaction Auto
 Faction Property SubDomFaction Auto
@@ -24,7 +25,6 @@ GlobalVariable Property PlayerFollowerCount Auto
 Message Property  FollowerDismissMessage Auto
 Message Property  FollowerDismissMessageWait Auto
 Quest Property pDialogueFollower  Auto
-ReferenceAlias Property Alias_PC Auto
 ReferenceAlias Property Alias_Follower Auto
 
 Event OnRelationshipEnded(String asName, String asString, Float afNonConsEnd, Form akSender)
@@ -47,15 +47,13 @@ Event OnRelationshipEnded(String asName, String asString, Float afNonConsEnd, Fo
 EndEvent
 
 Event OnStageChange(String asName, String asString, Float afNum, Form akSender)
-	sslThreadController tc = SexLab.GetActorController(Alias_PC.GetActorRef())
+	sslThreadController tc = SexLab.GetActorController(PlayerRef)
 	tc.EndAnimation()
 	SendModEvent("APPS_SceneEnd")
 	UnregisterForModEvent("StageEnd")
 EndEvent
 
 Function SetFollower(Actor akFollower)
-	Actor Player = Alias_PC.GetActorRef()
-
 	If(akFollower.IsInFaction(SubDomRankFaction))
 		Domina.SwitchCurrentDomina(akFollower)
 	EndIf
@@ -63,8 +61,8 @@ Function SetFollower(Actor akFollower)
 	Alias_Follower.ForceRefTo(akFollower)
 	akFollower.RemoveFromFaction(DismissedFollowerFaction)
 
-	If(akFollower.GetRelationshipRank(Player) < 3 && akFollower.GetRelationshipRank(Player) >= 0)
-		akFollower.SetRelationshipRank(Player, 3)
+	If(akFollower.GetRelationshipRank(PlayerRef) < 3 && akFollower.GetRelationshipRank(PlayerRef) >= 0)
+		akFollower.SetRelationshipRank(PlayerRef, 3)
 	EndIf
 
 	akFollower.SetPlayerTeammate()

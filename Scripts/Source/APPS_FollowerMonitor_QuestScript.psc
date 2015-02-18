@@ -7,11 +7,6 @@ Scriptname APPS_FollowerMonitor_QuestScript Extends Quest Hidden
 ReferenceAlias Property Alias_Follower Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY PC
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_PC Auto
-;END ALIAS PROPERTY
-
 ;BEGIN FRAGMENT Fragment_0
 Function Fragment_0()
 ;BEGIN AUTOCAST TYPE APPS_FollowerMonitor_Functions

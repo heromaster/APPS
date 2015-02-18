@@ -54,6 +54,8 @@ Int AnalModSlider
 Int AutoSaveToggle
 Int DifficultyMenu
 Int DragonbornBonusSlider
+Int DynamicInteraction
+Int DynamicInteractionKey
 Int HoursToWorkSlider
 Int MaxTipSlider
 Int MaxTipSCSlider
@@ -129,6 +131,7 @@ Event OnPageReset(string Page)
 		DifficultyMenu = AddMenuOption("$DIFFICULTY", DifficultyList[iDifficultyChoice])
 		AutoSaveToggle = AddToggleOption("$AUTOSAVE_ON", GetIntValue(None, AUTO_SAVE))
 		WorldSettingMenu = AddMenuOption("$WORLD_SETTING", WorldSettingList[iWorldSettingChoice])
+		DynamicInteraction = AddKeymapOption("$DYNAMIC_INTERACTION", DynamicInteractionKey)
 	ElseIf(Page == Pages[1])
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("$TAVERN_JOB", OptionFlag[iDifficultyChoice])
@@ -458,6 +461,40 @@ Event OnOptionSliderAccept(Int SelectedSlider, Float Value)
 				SetSliderOptionValue(OralModSlider, Value - 5, "{0}%")
 			EndIf
 		EndIf
+EndEvent
+
+;-------------------------------------------------------
+;	SKI keymapping events
+;-------------------------------------------------------
+Event OnOptionKeyMapChange(Int aiOption, Int aiNewKeyCode, String asConflictControl, String asConflictName)
+	Bool Continue
+	Int EventHandle
+	String ConflictMessage
+
+	If(asConflictControl != "")
+		If(asConflictName != "")
+			ConflictMessage = "$CONFLICT_KEY_MSG{" + asConflictControl + " (" + asConflictName + ")}"
+		Else
+			ConflictMessage = "$CONFLICT_KEY_MSG{" + asConflictControl + "}"
+		EndIf
+
+		Continue = ShowMessage(ConflictMessage, True, "$YES", "SNO")
+	EndIf
+
+	If(!Continue)
+		Return
+	EndIf
+
+	DynamicInteractionKey = aiNewKeyCode
+	SetKeyMapOptionValue(DynamicInteraction, DynamicInteractionKey)
+
+	EventHandle = ModEvent.Create("APPS_MapKey")
+
+	If(EventHandle)
+		ModEvent.PushForm(EventHandle, Self)
+		ModEvent.PushInt(EventHandle, DynamicInteractionKey)
+		ModEvent.Send(EventHandle)
+	EndIf
 EndEvent
 
 ;-------------------------------------------------------

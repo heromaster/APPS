@@ -10,10 +10,6 @@ If(RS.GetRelationshipPoints(akSpeaker) > -150)
 	RS.ModRelationshipPoints(akSpeaker, -5)
 EndIf
 
-If(RS.GetRelationshipPoints(Alias_Patron.GetActorRef()) > -150)
-	RS.ModRelationshipPoints(Alias_Patron.GetActorRef(), -10)
-EndIf
-
 GetOwningQuest().SetStage(40)
 ;END CODE
 EndFunction
@@ -21,5 +17,3 @@ EndFunction
 
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 APPS_FW_Relationship Property RS Auto
-
-ReferenceAlias Property Alias_Patron Auto
