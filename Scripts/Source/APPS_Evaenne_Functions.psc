@@ -1,2 +1,2 @@
 Scriptname APPS_Evaenne_Functions extends Quest  Conditional
-Bool Property IsCanDualCasting Auto Conditional Hidden
+Bool Property CanDualCasting Auto Conditional Hidden

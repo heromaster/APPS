@@ -24,6 +24,8 @@ EndFunction
 ;BEGIN FRAGMENT Fragment_1
 Function Fragment_1()
 ;BEGIN CODE
+Form[] ArmorList = New Form[5]
+Bool IsWAFInstalled = Game.GetFormFromFile(0xD62, "Weapons & Armor_TrueOrcish&DaedricWeapons.esp")
 ;Create sexuality stats for Brenuin the beggar
 If(!SexLab.Stats.HadSex(Brenuin))
 	Int Anal = Utility.RandomInt(20, 45)
@@ -38,62 +40,134 @@ EndIf
 ;Set synchronization mode for Hulda specifically
 RS.SetSyncMode(Self, HuldaRef, 3)
 
+HuldaRef.SetFactionRank(HuldaFamilyFaction, 4)
+PlayerRef.SetFactionRank(HuldaFamilyFaction, 0)
+
 Int Level = EvaenneRef.GetLevel()
 
 ;Create armor lists for Evaenne
 If(Level < 6)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_01, Evaenne_EnchCirclet01)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_01, Evaenne_HideBoots)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_01, Evaenne_StuddedCuirass)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_01, Evaenne_HideGauntlets)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_01, Evaenne_DomRing)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_01, EnchCirclet01)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_01, ArmorHideBoots)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_01, ArmorStuddedCuirass)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_01, ArmorHideGauntlets)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_01, DomRing)
 EndIf
 
 If(Level < 12)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_06, Evaenne_EnchCirclet02)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_06, Evaenne_LeatherBoots)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_06, Evaenne_LeatherCuirass)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_06, Evaenne_LeatherGauntlets)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_06, Evaenne_DomRing)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_06, EnchCirclet02)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_06, ArmorLeatherBoots)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_06, ArmorLeatherCuirass)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_06, ArmorLeatherGauntlets)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_06, DomRing)
 EndIf
 
 If(Level < 19)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_12, Evaenne_EnchCirclet03)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_12, Evaenne_ElvenBoots)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_12, Evaenne_ElvenCuirass)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_12, Evaenne_ElvenGauntlets)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_12, Evaenne_DomRing)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_12, EnchCirclet03)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_12, ArmorElvenBoots)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_12, ArmorElvenCuirass)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_12, ArmorElvenGauntlets)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_12, DomRing)
 EndIf
 
 If(Level < 27)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_19, Evaenne_EnchCirclet03)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_19, Evaenne_ScaledBoots)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_19, Evaenne_ScaledCuirass)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_19, Evaenne_ScaledGauntlets)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_19, Evaenne_DomRing)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_19, EnchCirclet03)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_19, ArmorScaledBoots)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_19, ArmorScaledCuirass)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_19, ArmorScaledGauntlets)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_19, DomRing)
 EndIf
 
 If(Level < 36)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_27, Evaenne_EnchCirclet03)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_27, Evaenne_ScaledBoots)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_27, Evaenne_ElvenGildedCuirass)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_27, Evaenne_ScaledGauntlets)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_27, Evaenne_DomRing)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_27, EnchCirclet03)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_27, ArmorScaledBoots)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_27, ArmorElvenGildedCuirass)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_27, ArmorScaledGauntlets)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_27, DomRing)
 EndIf
 
 If(Level < 46)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_36, Evaenne_EnchCirclet04)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_36, Evaenne_GlassBoots)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_36, Evaenne_GlassCuirass)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_36, Evaenne_GlassGauntlets)
-	FormListAdd(EvaenneRef, OUTFIT_LVL_36, Evaenne_DomRing)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_36, EnchCirclet04)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_36, ArmorGlassBoots)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_36, ArmorGlassCuirass)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_36, ArmorGlassGauntlets)
+	FormListAdd(EvaenneRef, OUTFIT_LVL_36, DomRing)
 EndIf
 
-FormListAdd(EvaenneRef, OUTFIT_LVL_46, Evaenne_EnchCirclet05)
-FormListAdd(EvaenneRef, OUTFIT_LVL_46, Evaenne_DragonscaleBoots)
-FormListAdd(EvaenneRef, OUTFIT_LVL_46, Evaenne_DragonscaleCuirass)
-FormListAdd(EvaenneRef, OUTFIT_LVL_46, Evaenne_DragonscaleGauntlets)
-FormListAdd(EvaenneRef, OUTFIT_LVL_46, Evaenne_DomRing)
+FormListAdd(EvaenneRef, OUTFIT_LVL_46, EnchCirclet05)
+FormListAdd(EvaenneRef, OUTFIT_LVL_46, ArmorDragonscaleBoots)
+FormListAdd(EvaenneRef, OUTFIT_LVL_46, ArmorDragonscaleCuirass)
+FormListAdd(EvaenneRef, OUTFIT_LVL_46, ArmorDragonscaleGauntlets)
+FormListAdd(EvaenneRef, OUTFIT_LVL_46, DomRing)
+FormListAdd(EvaenneRef, CASUAL_WEAR, ClothesNighthawkTorso)
+FormListAdd(EvaenneRef, CASUAL_WEAR, ClothesNighthawkBoots)
+FormListAdd(EvaenneRef, CASUAL_WEAR, ClothesNighthawkGloves)
+FormListAdd(EvaenneRef, CASUAL_WEAR, DomRing)
+
+;Give Evaenne base items
+If(Level < 3)
+	EvaenneRef.AddItem(IronArrow, 100)
+ElseIf(Level < 6)
+	FormListSlice(EvaenneRef, OUTFIT_LVL_01, ArmorList)
+	EvaenneRef.EquipItem(EvaenneBowLvl01)
+	EvaenneRef.AddItem(SteelArrow, 100)
+ElseIf(Level < 12)
+	FormListSlice(EvaenneRef, OUTFIT_LVL_06, ArmorList)
+
+	If(IsWAFInstalled)
+		EvaenneRef.EquipItem(EvaenneBowLvl06_WAF)
+	Else
+		EvaenneRef.EquipItem(EvaenneBowLvl06)
+	EndIf
+
+	EvaenneRef.AddItem(OrcishArrow, 100)
+ElseIf(Level < 19)
+	FormListSlice(EvaenneRef, OUTFIT_LVL_12, ArmorList)
+
+	If(IsWAFInstalled)
+		EvaenneRef.EquipItem(EvaenneBowLvl12_WAF)
+	Else
+		EvaenneRef.EquipItem(EvaenneBowLvl12)
+	EndIf
+
+	EvaenneRef.AddItem(DwarvenArrow, 100)
+ElseIf(Level < 27)
+	FormListSlice(EvaenneRef, OUTFIT_LVL_19, ArmorList)
+
+	If(IsWAFInstalled)
+		EvaenneRef.EquipItem(EvaenneBowLvl19_WAF)
+	Else
+		EvaenneRef.EquipItem(EvaenneBowLvl19)
+	EndIf
+
+	EvaenneRef.AddItem(ElvenArrow, 100)
+ElseIf(Level < 36)
+	FormListSlice(EvaenneRef, OUTFIT_LVL_27, ArmorList)
+
+	If(IsWAFInstalled)
+		EvaenneRef.EquipItem(EvaenneBowLvl27_WAF)
+	Else
+		EvaenneRef.EquipItem(EvaenneBowLvl27)
+	EndIf
+
+	EvaenneRef.AddItem(GlassArrow, 100)
+ElseIf(Level < 46)
+	FormListSlice(EvaenneRef, OUTFIT_LVL_36, ArmorList)
+	EvaenneRef.EquipItem(EvaenneBowLvl36)
+	EvaenneRef.AddItem(EbonyArrow, 100)
+Else
+	FormListSlice(EvaenneRef, OUTFIT_LVL_46, ArmorList)
+
+	If(IsWAFInstalled)
+		EvaenneRef.EquipItem(EvaenneBowLvl46_WAF)
+	Else
+		EvaenneRef.EquipItem(EvaenneBowLvl46)
+	EndIf
+
+	EvaenneRef.AddItem(DaedricArrow, 100)
+EndIf
+
+EvaenneRef.SetOutfit(OutfitFactory.CreateOutfit(ArmorList))
 
 ;Taskplaner stuff
 IntListAdd(None, "APPS.Evaenne.Tasks.Stage0", 0)
@@ -128,35 +202,49 @@ String Property OUTFIT_LVL_19 = "APPS.Evaenne.Armor.Level.19" AutoReadOnly Hidde
 String Property OUTFIT_LVL_27 = "APPS.Evaenne.Armor.Level.27" AutoReadOnly Hidden
 String Property OUTFIT_LVL_36 = "APPS.Evaenne.Armor.Level.36" AutoReadOnly Hidden
 String Property OUTFIT_LVL_46 = "APPS.Evaenne.Armor.Level.46" AutoReadOnly Hidden
+String Property CASUAL_WEAR =  "APPS.Evaenne.Armor.CasualWear" AutoReadOnly Hidden
 
 Actor Property Brenuin Auto
 Actor Property EvaenneRef Auto
 Actor Property HuldaRef Auto
-Armor Property Evaenne_DomRing Auto
-Armor Property Evaenne_DragonscaleBoots Auto
-Armor Property Evaenne_DragonscaleCuirass Auto
-Armor Property Evaenne_DragonscaleGauntlets Auto
-Armor Property Evaenne_ElvenBoots Auto
-Armor Property Evaenne_ElvenCuirass Auto
-Armor Property Evaenne_ElvenGauntlets Auto
-Armor Property Evaenne_ElvenGildedCuirass Auto
-Armor Property Evaenne_EnchCirclet01 Auto
-Armor Property Evaenne_EnchCirclet02 Auto
-Armor Property Evaenne_EnchCirclet03 Auto
-Armor Property Evaenne_EnchCirclet04 Auto
-Armor Property Evaenne_EnchCirclet05 Auto
-Armor Property Evaenne_GlassBoots Auto
-Armor Property Evaenne_GlassCuirass Auto
-Armor Property Evaenne_GlassGauntlets Auto
-Armor Property Evaenne_HideBoots Auto
-Armor Property Evaenne_HideGauntlets Auto
-Armor Property Evaenne_LeatherBoots Auto
-Armor Property Evaenne_LeatherCuirass Auto
-Armor Property Evaenne_LeatherGauntlets Auto
-Armor Property Evaenne_ScaledBoots Auto
-Armor Property Evaenne_ScaledCuirass Auto
-Armor Property Evaenne_ScaledGauntlets Auto
-Armor Property Evaenne_StuddedCuirass Auto
+Actor Property PlayerRef Auto
+Ammo Property DaedricArrow Auto
+Ammo Property DwarvenArrow Auto
+Ammo Property EbonyArrow Auto
+Ammo Property ElvenArrow Auto
+Ammo Property GlassArrow Auto
+Ammo Property IronArrow Auto
+Ammo Property OrcishArrow Auto
+Ammo Property SteelArrow Auto
+Armor Property ArmorDragonscaleBoots Auto
+Armor Property ArmorDragonscaleCuirass Auto
+Armor Property ArmorDragonscaleGauntlets Auto
+Armor Property ArmorElvenBoots Auto
+Armor Property ArmorElvenCuirass Auto
+Armor Property ArmorElvenGauntlets Auto
+Armor Property ArmorElvenGildedCuirass Auto
+Armor Property ArmorGlassBoots Auto
+Armor Property ArmorGlassCuirass Auto
+Armor Property ArmorGlassGauntlets Auto
+Armor Property ArmorHideBoots Auto
+Armor Property ArmorHideGauntlets Auto
+Armor Property ArmorLeatherBoots Auto
+Armor Property ArmorLeatherCuirass Auto
+Armor Property ArmorLeatherGauntlets Auto
+Armor Property ArmorScaledBoots Auto
+Armor Property ArmorScaledCuirass Auto
+Armor Property ArmorScaledGauntlets Auto
+Armor Property ArmorStuddedCuirass Auto
+Armor Property ClothesNighthawkTorso Auto
+Armor Property ClothesNighthawkBoots Auto
+Armor Property ClothesNighthawkGloves Auto
+Armor Property DomRing Auto
+Armor Property EnchCirclet01 Auto
+Armor Property EnchCirclet02 Auto
+Armor Property EnchCirclet03 Auto
+Armor Property EnchCirclet04 Auto
+Armor Property EnchCirclet05 Auto
+Faction Property HuldaFamilyFaction Auto
 Location Property BanneredMare Auto
 ObjectReference Property FavoriteChair Auto
 ObjectReference Property Room1BedDH Auto
@@ -165,3 +253,15 @@ Quest Property BanneredMareHelper Auto
 Quest Property Domina Auto
 Quest Property DominaSD Auto
 Quest Property EvaenneQuest Auto
+Weapon Property EvaenneBowLvl01 Auto
+Weapon Property EvaenneBowLvl06 Auto
+Weapon Property EvaenneBowLvl06_WAF Auto
+Weapon Property EvaenneBowLvl12 Auto
+Weapon Property EvaenneBowLvl12_WAF Auto
+Weapon Property EvaenneBowLvl19 Auto
+Weapon Property EvaenneBowLvl19_WAF Auto
+Weapon Property EvaenneBowLvl27 Auto
+Weapon Property EvaenneBowLvl27_WAF Auto
+Weapon Property EvaenneBowLvl36 Auto
+Weapon Property EvaenneBowLvl46 Auto
+Weapon Property EvaenneBowLvl46_WAF Auto

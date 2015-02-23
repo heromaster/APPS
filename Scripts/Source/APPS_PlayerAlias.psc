@@ -1,7 +1,11 @@
 Scriptname APPS_PlayerAlias extends ReferenceAlias  
+Import StorageUtil
 
 Event OnInit()
-	RegisterForKey(47) ;V-key
+	If(!GetOwningQuest().IsRunning())
+		Return
+	EndIf
+
 	RegisterForModEvent("APPS_MapKey", "OnKeyMapping")
 EndEvent
 
@@ -15,14 +19,14 @@ Event OnKeyMapping(Form akSender, Int aiNewKey)
 EndEvent
 
 Event OnKeyDown(Int aiKeyCode)
-	If(aiKeyCode == 47)
-		Debug.Notification("Key V is released.")
+	If(aiKeyCode == GetIntValue(None, "APPS.KeyMap.DynamicInteraction"))
 		GoToState("Test")
 		InteractiveMenu()
 	EndIf
 EndEvent
 
 Function InteractiveMenu()
+
 EndFunction
 
 State Test
@@ -41,7 +45,7 @@ State Test
 			WheelMenu.SetPropertyIndexString("optionText", CommandLeave, "$LEAVE")
 			WheelMenu.SetPropertyIndexString("optionLabelText", CommandStripOnePart, "$STRIP_ONE_PART_LBL")
 			WheelMenu.SetPropertyIndexString("optionLabelText", CommandStripAll, "$STRIP_ALL_LBL")
-			WheelMenu.SetPropertyIndexString("optionLabelText", CommandLeave, "SLEAVE")
+			WheelMenu.SetPropertyIndexString("optionLabelText", CommandLeave, "$LEAVE")
 			WheelMenu.SetPropertyIndexBool("optionEnabled", CommandStripOnePart, True)
 			WheelMenu.SetPropertyIndexBool("optionEnabled", CommandStripAll, True)
 			WheelMenu.SetPropertyIndexBool("optionEnabled", CommandLeave, True)

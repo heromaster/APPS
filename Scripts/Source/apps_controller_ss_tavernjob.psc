@@ -1,16 +1,6 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 4
+;NEXT FRAGMENT INDEX 8
 Scriptname APPS_Controller_SS_TavernJob Extends Scene Hidden
-
-;BEGIN FRAGMENT Fragment_3
-Function Fragment_3()
-;BEGIN CODE
-Game.SetInChargen(False, False, False)
-Game.EnablePlayerControls()
-Alias_ChestIdleMarker.GetRef().Disable()
-;END CODE
-EndFunction
-;END FRAGMENT
 
 ;BEGIN FRAGMENT Fragment_0
 Function Fragment_0()
@@ -27,18 +17,34 @@ Function Fragment_1()
 game.disablePlayerControls()
 Game.SetInChargen(False, True, False)
 
-If(PlayerRef.GetDistance(Alias_BarLeaningMarker1.GetRef()) < PlayerRef.GetDistance(Alias_BarLeaningMarker1.GetRef()))
+If(PlayerRef.GetDistance(Alias_BarLeaningMarker1.GetRef()) < PlayerRef.GetDistance(Alias_BarLeaningMarker2.GetRef()))
 	Alias_CorrectLeaningMarker.ForceRefTo(Alias_BarLeaningMarker1.GetRef())
+	Alias_CorrectBarCounter.ForceRefTo(CorrectBarCounter1)
+
 Else
 	Alias_CorrectLeaningMarker.ForceRefTo(Alias_BarLeaningMarker2.GetRef())
+	Alias_CorrectBarCounter.ForceRefTo(CorrectBarCounter2)
 EndIf
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
+;BEGIN FRAGMENT Fragment_3
+Function Fragment_3()
+;BEGIN CODE
+Game.SetInChargen(False, False, False)
+Game.EnablePlayerControls()
+Alias_ChestIdleMarker.GetRef().Disable()
+;END CODE
+EndFunction
+;END FRAGMENT
+
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
-ObjectReference Property PlayerRef Auto
+Actor Property PlayerRef Auto
+ObjectReference Property CorrectBarCounter1 Auto
+ObjectReference Property CorrectBarCounter2 Auto
 ReferenceAlias Property Alias_BarLeaningMarker1 Auto
 ReferenceAlias Property Alias_BarLeaningMarker2 Auto
 ReferenceAlias Property Alias_ChestIdleMarker Auto
+ReferenceAlias Property Alias_CorrectBarCounter Auto
 ReferenceAlias Property Alias_CorrectLeaningMarker Auto

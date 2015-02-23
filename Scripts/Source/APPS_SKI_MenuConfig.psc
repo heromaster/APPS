@@ -55,7 +55,6 @@ Int AutoSaveToggle
 Int DifficultyMenu
 Int DragonbornBonusSlider
 Int DynamicInteraction
-Int DynamicInteractionKey
 Int HoursToWorkSlider
 Int MaxTipSlider
 Int MaxTipSCSlider
@@ -131,7 +130,7 @@ Event OnPageReset(string Page)
 		DifficultyMenu = AddMenuOption("$DIFFICULTY", DifficultyList[iDifficultyChoice])
 		AutoSaveToggle = AddToggleOption("$AUTOSAVE_ON", GetIntValue(None, AUTO_SAVE))
 		WorldSettingMenu = AddMenuOption("$WORLD_SETTING", WorldSettingList[iWorldSettingChoice])
-		DynamicInteraction = AddKeymapOption("$DYNAMIC_INTERACTION", DynamicInteractionKey)
+		DynamicInteraction = AddKeymapOption("$DYNAMIC_INTERACTION", GetIntValue(None, "APPS.KeyMap.DynamicInteraction"))
 	ElseIf(Page == Pages[1])
 		SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("$TAVERN_JOB", OptionFlag[iDifficultyChoice])
@@ -485,14 +484,14 @@ Event OnOptionKeyMapChange(Int aiOption, Int aiNewKeyCode, String asConflictCont
 		Return
 	EndIf
 
-	DynamicInteractionKey = aiNewKeyCode
-	SetKeyMapOptionValue(DynamicInteraction, DynamicInteractionKey)
+	SetIntValue(None, "APPS.KeyMap.DynamicInteraction", aiNewKeyCode)
+	SetKeyMapOptionValue(DynamicInteraction, aiNewKeyCode)
 
 	EventHandle = ModEvent.Create("APPS_MapKey")
 
 	If(EventHandle)
 		ModEvent.PushForm(EventHandle, Self)
-		ModEvent.PushInt(EventHandle, DynamicInteractionKey)
+		ModEvent.PushInt(EventHandle, aiNewKeyCode)
 		ModEvent.Send(EventHandle)
 	EndIf
 EndEvent
