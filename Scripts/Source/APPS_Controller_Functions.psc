@@ -5,8 +5,11 @@ SexLabFramework Property SexLab Auto
 
 Bool Property IsGivingAllGold Auto Conditional Hidden
 Bool Property IsPlayerJobWhore Auto Conditional Hidden
+Bool Property IsPlayerTop Auto Conditional Hidden
 Int Property FoodOrdersFailed Auto Conditional Hidden
 Int Property Satisfaction Auto Conditional Hidden
+Int Property SexActToInt Auto Conditional Hidden
+Int Property SexSkillDifference Auto Conditional Hidden
 Int Property TavernJobStorylineProgress Auto Conditional Hidden
 
 String Property ANAL_MOD = "APPS.Settings.AnalModifier" AutoReadOnly Hidden
@@ -40,7 +43,7 @@ String Property MIN_DANCE_REWARD = "APPS.Settings.MinDanceReward" AutoReadOnly H
 String Property MIN_TIP = "APPS.Settings.MinTip" AutoReadOnly Hidden
 String Property MIN_TIP_SC = "APPS.Settings.MinTipSC" AutoReadOnly Hidden
 String Property ORAL_MOD = "APPS.Settings.OralModifier" AutoReadOnly Hidden
-String Property SEX_ACT = "APPS.SexAct" AutoReadOnly Hidden
+String Property SEX_ACT = "APPS.Controller.SexAct" AutoReadOnly Hidden
 String Property SEX_ORDERS_ACCEPTED = "APPS.Stats.SexOrdersAccepted" AutoReadOnly Hidden
 String Property SEX_ORDERS_ACCEPTED_TOTAL = "APPS.Stats.TotalSexOrdersAcceptedTotal" AutoReadOnly Hidden
 String Property SEX_ORDERS_DECLINED = "APPS.Stats.SexOrdersDeclined" AutoReadOnly Hidden
@@ -49,10 +52,30 @@ String Property SEX_ORDERS_REQUESTED = "APPS.Stats.SexOrdersRequested" AutoReadO
 String Property SEX_ORDERS_REQUESTED_TOTAL = "APPS.Stats.TotalSexOrdersRequestedTotal" AutoReadOnly Hidden
 String Property VAGINAL_MOD = "APPS.Settings.VaginalModifier" AutoReadOnly Hidden
 String Property WHORE_MOD = "APPS.Settings.WhoreModifier" AutoReadOnly Hidden
+String Property SexAct Hidden
+	Function Set(String Value)
+		SexAct = Value
+
+		If(Value == "Oral")
+			SexActToInt = 1
+		ElseIf(Value == "Vaginal")
+			SexActToInt = 2
+		ElseIf(Value == "Anal")
+			SexActToInt = 3
+		EndIf
+	EndFunction
+
+	String Function Get()
+		Return _SexAct
+	EndFunction
+EndProperty
 
 Actor Property PlayerRef Auto
 Faction Property DBIdentifiedFaction Auto
 MiscObject Property Septims Auto
+
+Float FreeFuckMulti
+String _SexAct
 
 Function AddToStats(Int auiStat, Bool abSuccess = True, Bool abSameGuest = False)
 	If(auiStat == 1)
@@ -113,8 +136,7 @@ EndFunction
 
 Function ClearSexAct()
 	FormListClear(None, SEX_ACT)
-	UnsetStringValue(None, SEX_ACT)
-	UnsetIntValue(None, SEX_ACT)
+	FreeFuckMulti = 0.0
 EndFunction
 
 Function AddToSexAct(Actor[] akParticipants, Int auiSexAct)
@@ -127,14 +149,26 @@ Function AddToSexAct(Actor[] akParticipants, Int auiSexAct)
 	EndWhile
 
 	If(auiSexAct == 1)
-		SetStringValue(None, SEX_ACT, "Oral")
-	ElseIf(auiSexAct == 2)
-		SetStringValue(None, SEX_ACT, "Vaginal")
-	ElseIf(auiSexAct == 3)
-		SetStringValue(None, SEX_ACT, "Anal")
+		If(akParticipants[1] == PlayerRef)
+			IsPlayerTop = False
+		Else
+			IsPlayerTop = True
+		EndIf
+	Else
+		If(akParticipants[0] == PlayerRef)
+			IsPlayerTop = False
+		Else
+			IsPlayerTop = True
+		EndIf
 	EndIf
 
-	SetIntValue(None, SEX_ACT, auiSexAct)
+	If(auiSexAct == 1)
+		SexAct = "Oral"
+	ElseIf(auiSexAct == 2)
+		SexAct = "Vaginal"
+	ElseIf(auiSexAct == 3)
+		SexAct = "Anal"
+	EndIf
 EndFunction
 
 Function PerformSexAct()
@@ -145,10 +179,10 @@ Function PerformSexAct()
 	SexActorList[1] = FormListGet(None, SEX_ACT, 1) As Actor
 	SexActorList = SexLab.SortActors(SexActorList)
 
-	If(GetIntValue(None, SEX_ACT) == 1 && ((FormListGet(None, SEX_ACT, 0) As Actor).GetActorBase().GetSex() == 1 && (FormListGet(None, SEX_ACT, 1) As Actor).GetActorBase().GetSex() == 1))
+	If(SexActToInt == 1 && ((FormListGet(None, SEX_ACT, 0) As Actor).GetActorBase().GetSex() == 1 && (FormListGet(None, SEX_ACT, 1) As Actor).GetActorBase().GetSex() == 1))
 		SexAnimationList = SexLab.GetAnimationsByTag(2, "Cunnilingus", requireAll = False)
 	Else
-		SexAnimationList = SexLab.GetAnimationsByTag(2, GetIntValue(None, SEX_ACT))
+		SexAnimationList = SexLab.GetAnimationsByTag(2, SexAct)
 	EndIf
 
 	sslThreadModel th = SexLab.NewThread()
@@ -158,6 +192,10 @@ Function PerformSexAct()
 	th.DisableLeadIn(true)
 	th.SetBedding(0)
 	th.StartThread()
+EndFunction
+
+Function ModFreeFuckMulti(Float afModifier)
+	FreeFuckMulti += afModifier
 EndFunction
 
 Function EarnReward(Actor akClient, Int auiTask)
@@ -195,17 +233,17 @@ Function EarnReward(Actor akClient, Int auiTask)
 				i += 1
 			EndWhile
 
-			GoldAmount = GetIntValue(None, BASE_PAYMENT_WHORE) * Sexperience[GetIntValue(None, SEX_ACT)]
+			GoldAmount = GetIntValue(None, BASE_PAYMENT_WHORE) * Sexperience[SexActToInt]
 			GoldAmount += GoldAmount * GetFloatValue(None, WHORE_MOD)
 		Else
 			GoldAmount = GetIntValue(None, BASE_PAYMENT_WHORE)
 		EndIf
 
-		If(GetIntValue(None, SEX_ACT) == 1)
+		If(SexActToInt == 1)
 			GoldAmount *= GetFloatValue(None, ORAL_MOD)
-		ElseIf(GetIntValue(None, SEX_ACT) == 2)
+		ElseIf(SexActToInt == 2)
 			GoldAmount *= GetFloatValue(None, VAGINAL_MOD)
-		ElseIf(GetIntValue(None, SEX_ACT) == 3)
+		ElseIf(SexActToInt == 3)
 			GoldAmount *= GetFloatValue(None, ANAL_MOD)
 		EndIf
 
@@ -215,6 +253,8 @@ Function EarnReward(Actor akClient, Int auiTask)
 
 		If(IsPlayerJobWhore)
 			AdjustIntValue(None, INNKEEPER_SHARE, Math.Floor(GoldAmount / 2))
+		Else
+			GoldAmount += GetIntValue(None, BASE_PAYMENT_WHORE) * FreeFuckMulti
 		EndIf
 	ElseIf(auiTask == 3)
 		GoldAmount = Utility.RandomInt(GetIntValue(None, MIN_DANCE_REWARD), GetIntValue(None, MAX_DANCE_REWARD))
@@ -229,4 +269,16 @@ Function EarnReward(Actor akClient, Int auiTask)
 	IsGivingAllGold = False
 
 	UnsetIntValue(None, BILL)
+EndFunction
+
+Function SkillLevelDifference(Actor akPlayer, Actor akClient, String akSexAct)
+	Int Diff = SexLab.Stats.GetSkillLevel(akPlayer, akSexAct) - SexLab.Stats.GetSkillLevel(akClient, akSexAct)
+
+	If(Diff < 0)
+		SexSkillDifference = -1
+	ElseIf(Diff == 0)
+		SexSkillDifference = 0
+	Else
+		SexSkillDifference = 1
+	EndIf
 EndFunction

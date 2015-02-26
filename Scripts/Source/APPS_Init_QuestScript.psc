@@ -26,6 +26,7 @@ Function Fragment_1()
 ;BEGIN CODE
 Form[] ArmorList = New Form[5]
 Bool IsWAFInstalled = Game.GetFormFromFile(0xD62, "Weapons & Armor_TrueOrcish&DaedricWeapons.esp")
+
 ;Create sexuality stats for Brenuin the beggar
 If(!SexLab.Stats.HadSex(Brenuin))
 	Int Anal = Utility.RandomInt(20, 45)

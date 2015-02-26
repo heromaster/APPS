@@ -93,6 +93,30 @@ Float fMaxOralMod = 115.00
 Float fMinVaginalMod = 10.00
 Float fMaxVaginalMod = 120.00
 
+Event OnInit()
+	If(!Self.IsRunning())
+		Return
+	EndIf
+
+	SetIntValue(None, AUTO_SAVE, 1)
+	SetToggleOptionValue(AutoSaveToggle, True)
+	SetIntValue(None, HOURS_TO_WORK, 8)
+	SetIntValue(None, HOURS_TO_WORK_EXPECTED, 4)
+	SetFloatValue(None, MIN_TIP, 0.05)
+	SetFloatValue(None, MAX_TIP, 0.10)
+	SetFloatValue(None, MIN_TIP_SC, 0.10)
+	SetFloatValue(None, MAX_TIP_SC, 0.20)
+	SetIntValue(None, BASE_PAYMENT, 15)
+	SetIntValue(None, BASE_PAYMENT_WHORE, 20)
+	SetFloatValue(None, WHORE_MOD, 1.00)
+	SetFloatValue(None, DB_BONUS, 0.15)
+	SetFloatValue(None, ANAL_MOD, 0.50)
+	SetFloatValue(None, ORAL_MOD, 0.25)
+	SetFloatValue(None, VAGINAL_MOD, 1.00)
+
+	Parent.OnInit()
+EndEvent
+
 ;-------------------------------------------------------
 ;	SKI page setup event
 ;-------------------------------------------------------
