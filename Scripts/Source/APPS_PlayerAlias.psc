@@ -30,6 +30,10 @@ Function InteractiveMenu()
 EndFunction
 
 State Test
+	Event OnKeyDown(Int aiKeyCode)
+
+	EndEvent
+
 	Function InteractiveMenu()
 		Debug.Notification("Test state landing")
 		Int CommandStripOnePart = 0

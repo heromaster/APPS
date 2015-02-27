@@ -1,10 +1,10 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 12
+;NEXT FRAGMENT INDEX 13
 Scriptname APPS_SQ01_QuestScript Extends Quest Hidden
 
-;BEGIN ALIAS PROPERTY Tavern
-;ALIAS PROPERTY TYPE LocationAlias
-LocationAlias Property Alias_Tavern Auto
+;BEGIN ALIAS PROPERTY Patron
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Patron Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Innkeeper
@@ -12,43 +12,15 @@ LocationAlias Property Alias_Tavern Auto
 ReferenceAlias Property Alias_Innkeeper Auto
 ;END ALIAS PROPERTY
 
+;BEGIN ALIAS PROPERTY Tavern
+;ALIAS PROPERTY TYPE LocationAlias
+LocationAlias Property Alias_Tavern Auto
+;END ALIAS PROPERTY
+
 ;BEGIN ALIAS PROPERTY Bed
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_Bed Auto
 ;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Patron
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Patron Auto
-;END ALIAS PROPERTY
-
-;BEGIN FRAGMENT Fragment_3
-Function Fragment_3()
-;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
-Quest __temp = self as Quest
-APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
-;END AUTOCAST
-;BEGIN CODE
-kmyQuest.CurrentStage = 30
-kmyQuest.CheckOrder()
-SetObjectiveCompleted(20)
-SetObjectiveDisplayed(30)
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_1
-Function Fragment_1()
-;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
-Quest __temp = self as Quest
-APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
-;END AUTOCAST
-;BEGIN CODE
-kmyQuest.CurrentStage = 10
-SetObjectiveDisplayed(10)
-;END CODE
-EndFunction
-;END FRAGMENT
 
 ;BEGIN FRAGMENT Fragment_6
 Function Fragment_6()
@@ -65,37 +37,6 @@ SetObjectiveCompleted(10, False)
 SetObjectiveCompleted(20, False)
 SetObjectiveFailed(30, False)
 SetStage(10)
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_0
-Function Fragment_0()
-;BEGIN CODE
-PlayerRef.AddToFaction(ServicesWhiterunBanneredMare)
-
-RegisterForSingleUpdateGameTime(1)
-
-;/ temporarily disabled until full support of known Follower Frameworks
-SQ01_DismissFollower.Start()
-/;
-
-SetObjectiveDisplayed(0)
-SetStage(10)
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_10
-Function Fragment_10()
-;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
-Quest __temp = self as Quest
-APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
-;END AUTOCAST
-;BEGIN CODE
-kmyQuest.CurrentStage = 60
-SetObjectiveCompleted(50)
-SetObjectiveDisplayed(60)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -146,6 +87,23 @@ SetStage(10)
 EndFunction
 ;END FRAGMENT
 
+;BEGIN FRAGMENT Fragment_0
+Function Fragment_0()
+;BEGIN CODE
+PlayerRef.AddToFaction(ServicesWhiterunBanneredMare)
+
+RegisterForSingleUpdateGameTime(1)
+
+;/ temporarily disabled until full support of known Follower Frameworks
+SQ01_DismissFollower.Start()
+/;
+
+SetObjectiveDisplayed(0)
+SetStage(10)
+;END CODE
+EndFunction
+;END FRAGMENT
+
 ;BEGIN FRAGMENT Fragment_2
 Function Fragment_2()
 ;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
@@ -161,17 +119,16 @@ SetObjectiveDisplayed(20)
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_9
-Function Fragment_9()
+;BEGIN FRAGMENT Fragment_11
+Function Fragment_11()
 ;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
 Quest __temp = self as Quest
 APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
 ;END AUTOCAST
 ;BEGIN CODE
-kmyQuest.CurrentStage = 50
-RoomTrigger.Enable()
-Alias_Patron.GetActorRef().EvaluatePackage()
-SetObjectiveDisplayed(50)
+kmyQuest.CurrentStage = 70
+Controller.PerformSexAct()
+Controller.SkillLevelDifference(PlayerRef, Alias_Patron.GetActorRef(), Controller.SexAct)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -191,16 +148,69 @@ SetObjectiveFailed(30)
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_11
-Function Fragment_11()
+;BEGIN FRAGMENT Fragment_3
+Function Fragment_3()
 ;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
 Quest __temp = self as Quest
 APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
 ;END AUTOCAST
 ;BEGIN CODE
-kmyQuest.CurrentStage = 70
-Controller.PerformSexAct()
-Controller.SkillLevelDifference(PlayerRef, Alias_Patron.GetActorRef(), Controller.SexAct)
+kmyQuest.CurrentStage = 30
+kmyQuest.CheckOrder()
+SetObjectiveCompleted(20)
+SetObjectiveDisplayed(30)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_10
+Function Fragment_10()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
+;BEGIN CODE
+kmyQuest.CurrentStage = 60
+SetObjectiveCompleted(50)
+SetObjectiveDisplayed(60)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_9
+Function Fragment_9()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
+;BEGIN CODE
+kmyQuest.CurrentStage = 50
+RoomTrigger.Enable()
+Alias_Patron.GetActorRef().EvaluatePackage()
+SetObjectiveDisplayed(50)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_12
+Function Fragment_12()
+;BEGIN CODE
+SetObjectiveCompleted(50)
+RoomTrigger.Disable()
+PunterScene.Start()
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_1
+Function Fragment_1()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
+;BEGIN CODE
+kmyQuest.CurrentStage = 10
+SetObjectiveDisplayed(10)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -208,7 +218,9 @@ EndFunction
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
 APPS_Controller_Functions Property Controller Auto
 APPS_FW_Relationship Property RS Auto
+
 Actor Property PlayerRef Auto
 Faction Property ServicesWhiterunBanneredMare Auto
 GlobalVariable Property PlayerFollowerCount Auto
 ObjectReference Property RoomTrigger Auto
+Scene Property PunterScene Auto
