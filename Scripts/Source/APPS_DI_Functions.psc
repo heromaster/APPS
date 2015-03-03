@@ -159,10 +159,10 @@ State MainMenuShown
 		String TempListKey
 		String TempListLabelKey
 
-		FormListClear(None, TEMP_XGROUPS)
-		FormListClear(None, TEMP_XGROUPS_LBL)
-		FormListClear(None, TEMP_GROUPS)
-		FormListClear(None, TEMP_GROUPS_LBL)
+		StringListClear(None, TEMP_XGROUPS)
+		StringListClear(None, TEMP_XGROUPS_LBL)
+		StringListClear(None, TEMP_GROUPS)
+		StringListClear(None, TEMP_GROUPS_LBL)
 
 		UIMenuBase WheelMenu = UIExtensions.GetMenu("UIWheelMenu")
 
