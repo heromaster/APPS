@@ -26,7 +26,7 @@ Function Fragment_1()
 ;BEGIN CODE
 Form[] ArmorList = New Form[5]
 Bool IsWAFInstalled = Game.GetFormFromFile(0xD62, "Weapons & Armor_TrueOrcish&DaedricWeapons.esp")
-
+Int ID
 ;Create sexuality stats for Brenuin the beggar
 If(!SexLab.Stats.HadSex(Brenuin))
 	Int Anal = Utility.RandomInt(20, 45)
@@ -188,6 +188,70 @@ SetIntValue(None, "APPS.Menu.IsActive", 1)
 Domina.Start()
 DominaSD.Start()
 EvaenneQuest.Start()
+DynamicInteractions.Start()
+
+;Creating entries for the wheel menu
+ID = (DynamicInteractions As APPS_DI_Functions).AddMenuGroup("Tanzen", "Tanzen")
+
+If(ID > 0)
+	StringListAdd(None, "APPS.Settings.MenuGroup", "Tanzen")
+	IntListAdd(None, "APPS.Settings.MenuGroup", ID)
+
+	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Ein Teil", "Ein Teil")
+
+	If(ID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Entkleiden", ID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Entkleiden", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "StripOnePart"))
+	EndIf
+
+	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Alles", "Alles")
+
+	If(ID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Entkleiden", ID)
+		StringListAdd(None, "APPS.Settings.MenuGroup.Entry.Callbacks.Entkleiden", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "StripAll"))
+	EndIf
+EndIf
+
+ID = (DynamicInteractions As APPS_DI_Functions).AddMenuGroup("Tanzen", "Tanzen")
+
+If(ID > 0)
+	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 1", "Tanz 1")
+
+	If(ID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "Dance"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 1)
+	EndIf
+
+	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 2", "Tanz 2", False)
+
+	If(ID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "Dance"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 2)
+	EndIf
+
+	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 3", "Tanz 3", False)
+
+	If(ID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 3)
+	EndIf
+
+	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 4", "Tanz 4", False)
+
+	If(ID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 4)
+	EndIf
+
+	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 5", "Tanz 5", False)
+
+	If(ID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 5)
+	EndIf
+EndIf
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -253,7 +317,9 @@ ObjectReference Property Room3BedDH Auto
 Quest Property BanneredMareHelper Auto
 Quest Property Domina Auto
 Quest Property DominaSD Auto
+Quest Property DynamicInteractions Auto
 Quest Property EvaenneQuest Auto
+ReferenceAlias Property Table1 Auto
 Weapon Property EvaenneBowLvl01 Auto
 Weapon Property EvaenneBowLvl06 Auto
 Weapon Property EvaenneBowLvl06_WAF Auto

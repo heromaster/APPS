@@ -99,7 +99,6 @@ Event OnInit()
 	EndIf
 
 	SetIntValue(None, AUTO_SAVE, 1)
-	SetToggleOptionValue(AutoSaveToggle, True)
 	SetIntValue(None, HOURS_TO_WORK, 8)
 	SetIntValue(None, HOURS_TO_WORK_EXPECTED, 4)
 	SetFloatValue(None, MIN_TIP, 0.05)
@@ -502,10 +501,10 @@ Event OnOptionKeyMapChange(Int aiOption, Int aiNewKeyCode, String asConflictCont
 		EndIf
 
 		Continue = ShowMessage(ConflictMessage, True, "$YES", "SNO")
-	EndIf
 
-	If(!Continue)
-		Return
+		If(!Continue)
+			Return
+		EndIf
 	EndIf
 
 	SetIntValue(None, "APPS.KeyMap.DynamicInteraction", aiNewKeyCode)
