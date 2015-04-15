@@ -1,0 +1,6 @@
+Scriptname APPS_SQ01_PlayerDancing_Functions Extends Quest Conditional
+Import StorageUtil
+
+Bool Property HasPlayerStoppedDancing Auto Hidden Conditional
+Float Property DanceRewardMulti Auto Hidden Conditional
+Int Property PlayerSelectedDance Auto Hidden Conditional

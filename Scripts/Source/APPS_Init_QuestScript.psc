@@ -25,17 +25,26 @@ EndFunction
 Function Fragment_1()
 ;BEGIN CODE
 Form[] ArmorList = New Form[5]
-Bool IsWAFInstalled = Game.GetFormFromFile(0xD62, "Weapons & Armor_TrueOrcish&DaedricWeapons.esp")
-Int ID
-;Create sexuality stats for Brenuin the beggar
-If(!SexLab.Stats.HadSex(Brenuin))
+Bool IsWAFInstalled
+Int GroupID
+Int EntryID
+Int i
+Int Level = EvaenneRef.GetLevel()
+
+;Look up for supported mods
+If(Game.GetModByName("Weapons & Armor_TrueOrcish&DaedricWeapons.esp") != 255)
+	IsWAFInstalled = True
+EndIf
+
+;Create sexuality stats for BrenuinBeggerRef the beggar
+If(!SexLab.Stats.HadSex(BrenuinBeggerRef))
 	Int Anal = Utility.RandomInt(20, 45)
 	Int Oral = Utility.RandomInt(60, 100)
-	SexLab.Stats.SetInt(Brenuin, "Anal", Anal)
-	SexLab.Stats.SetInt(Brenuin, "Vaginal", 0)
-	SexLab.Stats.SetInt(Brenuin, "Oral", Oral)
-	SexLab.Stats.SetInt(Brenuin, "Males", Anal + Oral)
-	FormListAdd(None, "SexLab.SkilledActors", Brenuin, False)
+	SexLab.Stats.SetInt(BrenuinBeggerRef, "Anal", Anal)
+	SexLab.Stats.SetInt(BrenuinBeggerRef, "Vaginal", 0)
+	SexLab.Stats.SetInt(BrenuinBeggerRef, "Oral", Oral)
+	SexLab.Stats.SetInt(BrenuinBeggerRef, "Males", Anal + Oral)
+	FormListAdd(None, "SexLab.SkilledActors", BrenuinBeggerRef, False)
 EndIf
 
 ;Set synchronization mode for Hulda specifically
@@ -43,8 +52,6 @@ RS.SetSyncMode(Self, HuldaRef, 3)
 
 HuldaRef.SetFactionRank(HuldaFamilyFaction, 4)
 PlayerRef.SetFactionRank(HuldaFamilyFaction, 0)
-
-Int Level = EvaenneRef.GetLevel()
 
 ;Create armor lists for Evaenne
 If(Level < 6)
@@ -169,17 +176,16 @@ Else
 EndIf
 
 EvaenneRef.SetOutfit(OutfitFactory.CreateOutfit(ArmorList))
-
 ;Taskplaner stuff
 IntListAdd(None, "APPS.Evaenne.Tasks.Stage0", 0)
 IntListAdd(None, "APPS.Evaenne.Tasks.Stage0", 1)
 IntListAdd(None, "APPS.Evaenne.ExcludedTasks", 1001)
 ;Setting up the rooms in the Drunken Huntsman basement
-SetFormValue(Room1BedDH, "APPS.DrunkenHuntsman.RoomGuest", Brenuin)
+SetFormValue(Room1BedDH, "APPS.DrunkenHuntsman.RoomGuest", BrenuinBeggerRef)
 SetFormValue(Room3BedDH, "APPS.DrunkenHuntsman.RoomGuest", EvaenneRef)
 ;Other stuff for Evaenne
-SetFormValue(BanneredMare, "APPS.FFQ001Helper", BanneredMareHelper)
-SetFormValue(EvaenneRef, "APPS.Framework.Relationship.FavoriteInn", BanneredMare)
+SetFormValue(WhiterunBanneredMareLocation, "APPS.FFQ001Helper", FFQ001_BM)
+SetFormValue(EvaenneRef, "APPS.Framework.Relationship.FavoriteInn", WhiterunBanneredMareLocation)
 SetFormValue(EvaenneRef, "APPS.Framework.Relationship.FavoriteChair", FavoriteChair)
 ;Interactive menu
 SetIntValue(None, "APPS.Menu.IsActive", 1)
@@ -191,67 +197,99 @@ EvaenneQuest.Start()
 DynamicInteractions.Start()
 
 ;Creating entries for the wheel menu
-ID = (DynamicInteractions As APPS_DI_Functions).AddMenuGroup("Tanzen", "Tanzen")
+GroupID = (DynamicInteractions As APPS_DI_Functions).AddMenuGroup("Entkleiden", "Entkleiden")
 
-If(ID > 0)
-	StringListAdd(None, "APPS.Settings.MenuGroup", "Tanzen")
-	IntListAdd(None, "APPS.Settings.MenuGroup", ID)
+If(GroupID > 0)
+	StringListAdd(None, "APPS.Settings.MenuGroup", "Entkleiden")
+	IntListAdd(None, "APPS.Settings.MenuGroup", GroupID)
 
-	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Ein Teil", "Ein Teil")
+	EntryID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry(GroupID, "Ein Teil", "Ein Teil")
 
-	If(ID > 0)
-		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Entkleiden", ID)
-		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Entkleiden", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "StripOnePart"))
+	If(EntryID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Entkleiden", EntryID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Entkleiden", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack(GroupID, EntryID, "Strip"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt(GroupID, EntryID, 0)
 	EndIf
 
-	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Alles", "Alles")
+	EntryID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry(GroupID, "Alles", "Alles")
 
-	If(ID > 0)
-		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Entkleiden", ID)
-		StringListAdd(None, "APPS.Settings.MenuGroup.Entry.Callbacks.Entkleiden", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "StripAll"))
+	If(EntryID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Entkleiden", EntryID)
+		StringListAdd(None, "APPS.Settings.MenuGroup.Entry.Callbacks.Entkleiden", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack(GroupID, EntryID, "Strip"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt(GroupID, EntryID, 1)
+	EndIf
+EndIf
+
+GroupID = (DynamicInteractions As APPS_DI_Functions).AddMenuGroup("Tanzen", "Tanzen")
+
+If(GroupID > 0)
+	EntryID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry(GroupID, "Tanz 1", "Tanz 1")
+
+	If(EntryID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", EntryID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack(GroupID, EntryID, "Dance"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt(GroupID, EntryID, 1)
+	EndIf
+
+	EntryID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry(GroupID, "Tanz 2", "Tanz 2", False)
+
+	If(EntryID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", EntryID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack(GroupID, EntryID, "Dance"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt(GroupID, EntryID, 2)
+	EndIf
+
+	EntryID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry(GroupID, "Tanz 3", "Tanz 3", False)
+
+	If(EntryID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", EntryID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack(GroupID, EntryID, "Dance"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt(GroupID, EntryID, 3)
+	EndIf
+
+	EntryID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry(GroupID, "Tanz 4", "Tanz 4", False)
+
+	If(EntryID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", EntryID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack(GroupID, EntryID, "Dance"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt(GroupID, EntryID, 4)
+	EndIf
+
+	EntryID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry(GroupID, "Tanz 5", "Tanz 5", False)
+
+	If(EntryID > 0)
+		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", EntryID)
+		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack(GroupID, EntryID, "Dance"))
+		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt(GroupID, EntryID, 5)
 	EndIf
 EndIf
 
-ID = (DynamicInteractions As APPS_DI_Functions).AddMenuGroup("Tanzen", "Tanzen")
-
-If(ID > 0)
-	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 1", "Tanz 1")
-
-	If(ID > 0)
-		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
-		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "Dance"))
-		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 1)
-	EndIf
-
-	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 2", "Tanz 2", False)
-
-	If(ID > 0)
-		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
-		StringListAdd(None, "APPS.Settings.MenuGroups.Entry.Callbacks.Tanzen", (DynamicInteractions As APPS_DI_Functions).AddMenuEntryCallBack("Tanzen", ID, "Dance"))
-		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 2)
-	EndIf
-
-	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 3", "Tanz 3", False)
-
-	If(ID > 0)
-		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
-		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 3)
-	EndIf
-
-	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 4", "Tanz 4", False)
-
-	If(ID > 0)
-		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
-		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 4)
-	EndIf
-
-	ID = (DynamicInteractions As APPS_DI_Functions).AddMenuEntry("Tanzen", "Tanz 5", "Tanz 5", False)
-
-	If(ID > 0)
-		IntListAdd(None, "APPS.Settings.MenuGroup.Entry.Tanzen", ID)
-		(DynamicInteractions As APPS_DI_Functions).AddCallbackParameterInt("Tanzen", ID, 5)
-	EndIf
-EndIf
+;Setting up dance marker positions
+SetFormValue(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.Tavern", WhiterunBanneredMareLocation)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", -400.8570)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", -95.0365)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 64.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 166.1584)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", -203.0190)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", -558.5507)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 64.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 166.1578)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", -43.8266)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", -569.7546)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 64.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", -159.4639)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", -128.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 64.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", -896.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 0.0000)
+FloatListAdd(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 69.7188)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -269,7 +307,7 @@ String Property OUTFIT_LVL_36 = "APPS.Evaenne.Armor.Level.36" AutoReadOnly Hidde
 String Property OUTFIT_LVL_46 = "APPS.Evaenne.Armor.Level.46" AutoReadOnly Hidden
 String Property CASUAL_WEAR =  "APPS.Evaenne.Armor.CasualWear" AutoReadOnly Hidden
 
-Actor Property Brenuin Auto
+Actor Property BrenuinBeggerRef Auto
 Actor Property EvaenneRef Auto
 Actor Property HuldaRef Auto
 Actor Property PlayerRef Auto
@@ -310,16 +348,15 @@ Armor Property EnchCirclet03 Auto
 Armor Property EnchCirclet04 Auto
 Armor Property EnchCirclet05 Auto
 Faction Property HuldaFamilyFaction Auto
-Location Property BanneredMare Auto
+Location Property WhiterunBanneredMareLocation Auto
 ObjectReference Property FavoriteChair Auto
 ObjectReference Property Room1BedDH Auto
 ObjectReference Property Room3BedDH Auto
-Quest Property BanneredMareHelper Auto
+Quest Property FFQ001_BM Auto
 Quest Property Domina Auto
 Quest Property DominaSD Auto
 Quest Property DynamicInteractions Auto
 Quest Property EvaenneQuest Auto
-ReferenceAlias Property Table1 Auto
 Weapon Property EvaenneBowLvl01 Auto
 Weapon Property EvaenneBowLvl06 Auto
 Weapon Property EvaenneBowLvl06_WAF Auto
