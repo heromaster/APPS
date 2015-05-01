@@ -31,6 +31,7 @@ Int EntryID
 Int i
 Int Level = EvaenneRef.GetLevel()
 
+SetIntValue(None, "APPS.KeyMap.DynamicInteractions", -1)
 ;Look up for supported mods
 If(Game.GetModByName("Weapons & Armor_TrueOrcish&DaedricWeapons.esp") != 255)
 	IsWAFInstalled = True
@@ -114,6 +115,8 @@ FormListAdd(EvaenneRef, CASUAL_WEAR, DomRing)
 
 ;Give Evaenne base items
 If(Level < 3)
+	FormListSlice(EvaenneRef, OUTFIT_LVL_01, ArmorList)
+	EvaenneRef.EquipItem(EvaenneBowLvl01)
 	EvaenneRef.AddItem(IronArrow, 100)
 ElseIf(Level < 6)
 	FormListSlice(EvaenneRef, OUTFIT_LVL_01, ArmorList)
@@ -174,6 +177,16 @@ Else
 
 	EvaenneRef.AddItem(DaedricArrow, 100)
 EndIf
+
+i = 0
+
+Debug.MessageBox("FormList length: " + ArmorList.Length)
+
+While(i < ArmorList.Length)
+	Debug.MessageBox(ArmorList[i].GetName())
+
+	i += 1
+EndWhile
 
 EvaenneRef.SetOutfit(OutfitFactory.CreateOutfit(ArmorList))
 ;Taskplaner stuff

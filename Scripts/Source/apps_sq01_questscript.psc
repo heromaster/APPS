@@ -2,14 +2,9 @@
 ;NEXT FRAGMENT INDEX 16
 Scriptname APPS_SQ01_QuestScript Extends Quest Hidden
 
-;BEGIN ALIAS PROPERTY HoldingCell
-;ALIAS PROPERTY TYPE LocationAlias
-LocationAlias Property Alias_HoldingCell Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker1
+;BEGIN ALIAS PROPERTY Saadia
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_PlayerDanceAudienceMarker1 Auto
+ReferenceAlias Property Alias_Saadia Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Tavern
@@ -17,9 +12,24 @@ ReferenceAlias Property Alias_PlayerDanceAudienceMarker1 Auto
 LocationAlias Property Alias_Tavern Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Ysolda
+;BEGIN ALIAS PROPERTY Patron
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Ysolda Auto
+ReferenceAlias Property Alias_Patron Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY HoldingCell
+;ALIAS PROPERTY TYPE LocationAlias
+LocationAlias Property Alias_HoldingCell Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY Bed
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_Bed Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker3
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_PlayerDanceAudienceMarker3 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Olfina
@@ -27,19 +37,19 @@ ReferenceAlias Property Alias_Ysolda Auto
 ReferenceAlias Property Alias_Olfina Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Patron
+;BEGIN ALIAS PROPERTY Ysolda
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Patron Auto
+ReferenceAlias Property Alias_Ysolda Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY PC
+;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker2
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_PC Auto
+ReferenceAlias Property Alias_PlayerDanceAudienceMarker2 Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY Bed
+;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker4
 ;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Bed Auto
+ReferenceAlias Property Alias_PlayerDanceAudienceMarker4 Auto
 ;END ALIAS PROPERTY
 
 ;BEGIN ALIAS PROPERTY Innkeeper
@@ -52,59 +62,35 @@ ReferenceAlias Property Alias_Innkeeper Auto
 ReferenceAlias Property Alias_PlayerDanceAudienceMarker5 Auto
 ;END ALIAS PROPERTY
 
+;BEGIN ALIAS PROPERTY PC
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_PC Auto
+;END ALIAS PROPERTY
+
+;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker1
+;ALIAS PROPERTY TYPE ReferenceAlias
+ReferenceAlias Property Alias_PlayerDanceAudienceMarker1 Auto
+;END ALIAS PROPERTY
+
 ;BEGIN ALIAS PROPERTY InnkeeperReplacement
 ;ALIAS PROPERTY TYPE ReferenceAlias
 ReferenceAlias Property Alias_InnkeeperReplacement Auto
 ;END ALIAS PROPERTY
 
-;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker3
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_PlayerDanceAudienceMarker3 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY Saadia
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_Saadia Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker4
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_PlayerDanceAudienceMarker4 Auto
-;END ALIAS PROPERTY
-
-;BEGIN ALIAS PROPERTY PlayerDanceAudienceMarker1000
-;ALIAS PROPERTY TYPE ReferenceAlias
-ReferenceAlias Property Alias_PlayerDanceAudienceMarker2 Auto
-;END ALIAS PROPERTY
-
-;BEGIN FRAGMENT Fragment_9
-Function Fragment_9()
-;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
-Quest __temp = self as Quest
-APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
-;END AUTOCAST
+;BEGIN FRAGMENT Fragment_12
+Function Fragment_12()
 ;BEGIN CODE
-kmyQuest.CurrentStage = 50
-RoomTrigger.Enable()
-Alias_Patron.GetActorRef().EvaluatePackage()
-SetObjectiveDisplayed(50)
+SetObjectiveCompleted(50)
+RoomTrigger.Disable()
+PunterScene.Start()
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_0
-Function Fragment_0()
+;BEGIN FRAGMENT Fragment_13
+Function Fragment_13()
 ;BEGIN CODE
-PlayerRef.AddToFaction(ServicesWhiterunBanneredMare)
-
-RegisterForSingleUpdateGameTime(1)
-
-;/ temporarily disabled until full support of known Follower Frameworks
-SQ01_DismissFollower.Start()
-/;
-
-SetObjectiveDisplayed(0)
-SetStage(10)
+SetObjectiveDisplayed(160)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -123,6 +109,40 @@ If(kmyQuest.IsQuestStopping)
 Else
 	SetObjectiveDisplayed(10)
 EndIf
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_6
+Function Fragment_6()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
+;BEGIN CODE
+Alias_Patron.GetActorRef().EvaluatePackage()
+SetObjectiveDisplayed(20, False)
+SetObjectiveDisplayed(30, False)
+SetObjectiveDisplayed(35, False)
+SetObjectiveCompleted(10, False)
+SetObjectiveCompleted(20, False)
+SetObjectiveFailed(30, False)
+SetStage(10)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_9
+Function Fragment_9()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
+;BEGIN CODE
+kmyQuest.CurrentStage = 50
+RoomTrigger.Enable()
+Alias_Patron.GetActorRef().EvaluatePackage()
+SetObjectiveDisplayed(50)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -151,29 +171,6 @@ SetStage(10)
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_13
-Function Fragment_13()
-;BEGIN CODE
-SetObjectiveDisplayed(160)
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_2
-Function Fragment_2()
-;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
-Quest __temp = self as Quest
-APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
-;END AUTOCAST
-;BEGIN CODE
-kmyQuest.CurrentStage = 20
-Alias_Patron.GetActorRef().EvaluatePackage()
-SetObjectiveCompleted(10)
-SetObjectiveDisplayed(20)
-;END CODE
-EndFunction
-;END FRAGMENT
-
 ;BEGIN FRAGMENT Fragment_11
 Function Fragment_11()
 ;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
@@ -188,11 +185,50 @@ Controller.SkillLevelDifference(PlayerRef, Alias_Patron.GetActorRef(), Controlle
 EndFunction
 ;END FRAGMENT
 
+;BEGIN FRAGMENT Fragment_4
+Function Fragment_4()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
+;BEGIN CODE
+kmyQuest.RemoveOrderedItems()
+kmyQuest.AddSatisfiedClient(Alias_Patron.GetActorRef(), 1)
+Controller.EarnReward(Alias_Patron.GetActorRef(), 1)
+SetObjectiveCompleted(30)
+Alias_Patron.GetActorRef().EvaluatePackage()
+SetObjectiveDisplayed(20, False)
+SetObjectiveDisplayed(30, False)
+SetObjectiveCompleted(10, False)
+SetObjectiveCompleted(20, False)
+SetObjectiveCompleted(30, False)
+SetStage(10)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_5
+Function Fragment_5()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
+;BEGIN CODE
+kmyQuest.CurrentStage = 35
+kmyQuest.RemoveOrderedItems()
+kmyQuest.AddDissatisfiedClient(Alias_Patron.GetActorRef(), 1)
+SetObjectiveFailed(30)
+;END CODE
+EndFunction
+;END FRAGMENT
+
 ;BEGIN FRAGMENT Fragment_14
 Function Fragment_14()
 ;BEGIN CODE
 If(!WheelMenu.IsWheelMenuActive())
 	WheelMenu.SetWheelMenuActive()
+Else
+	StorageUtil.SetIntValue(None, "APPS.TempVar.IsWheelMenuActive", 1)
 EndIf
 
 Int DanceGroupID = WheelMenu.GetMenuGroup("Tanzen")
@@ -241,67 +277,40 @@ If(Alias_Tavern.GetLocation() == WhiterunBanneredMareLocation)
 	Marker4.SetAngle(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 3), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 4), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 5))
 	Marker4.Enable()
 EndIf
+
+SQ01_PlayerDancing.Start()
 ;END CODE
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_5
-Function Fragment_5()
+;BEGIN FRAGMENT Fragment_2
+Function Fragment_2()
 ;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
 Quest __temp = self as Quest
 APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
 ;END AUTOCAST
 ;BEGIN CODE
-kmyQuest.CurrentStage = 35
-kmyQuest.RemoveOrderedItems()
-kmyQuest.AddDissatisfiedClient(Alias_Patron.GetActorRef(), 1)
-SetObjectiveFailed(30)
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_4
-Function Fragment_4()
-;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
-Quest __temp = self as Quest
-APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
-;END AUTOCAST
-;BEGIN CODE
-kmyQuest.RemoveOrderedItems()
-kmyQuest.AddSatisfiedClient(Alias_Patron.GetActorRef(), 1)
-Controller.EarnReward(Alias_Patron.GetActorRef(), 1)
-SetObjectiveCompleted(30)
+kmyQuest.CurrentStage = 20
 Alias_Patron.GetActorRef().EvaluatePackage()
-SetObjectiveDisplayed(20, False)
-SetObjectiveDisplayed(30, False)
-SetObjectiveCompleted(10, False)
-SetObjectiveCompleted(20, False)
-SetObjectiveCompleted(30, False)
+SetObjectiveCompleted(10)
+SetObjectiveDisplayed(20)
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_0
+Function Fragment_0()
+;BEGIN CODE
+PlayerRef.AddToFaction(ServicesWhiterunBanneredMare)
+
+RegisterForSingleUpdateGameTime(1)
+
+;/ temporarily disabled until full support of known Follower Frameworks
+SQ01_DismissFollower.Start()
+/;
+
+SetObjectiveDisplayed(0)
 SetStage(10)
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_12
-Function Fragment_12()
-;BEGIN CODE
-SetObjectiveCompleted(50)
-RoomTrigger.Disable()
-PunterScene.Start()
-;END CODE
-EndFunction
-;END FRAGMENT
-
-;BEGIN FRAGMENT Fragment_10
-Function Fragment_10()
-;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
-Quest __temp = self as Quest
-APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
-;END AUTOCAST
-;BEGIN CODE
-kmyQuest.CurrentStage = 60
-SetObjectiveCompleted(50)
-SetObjectiveDisplayed(60)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -321,21 +330,16 @@ SetObjectiveDisplayed(30)
 EndFunction
 ;END FRAGMENT
 
-;BEGIN FRAGMENT Fragment_6
-Function Fragment_6()
+;BEGIN FRAGMENT Fragment_10
+Function Fragment_10()
 ;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
 Quest __temp = self as Quest
 APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
 ;END AUTOCAST
 ;BEGIN CODE
-Alias_Patron.GetActorRef().EvaluatePackage()
-SetObjectiveDisplayed(20, False)
-SetObjectiveDisplayed(30, False)
-SetObjectiveDisplayed(35, False)
-SetObjectiveCompleted(10, False)
-SetObjectiveCompleted(20, False)
-SetObjectiveFailed(30, False)
-SetStage(10)
+kmyQuest.CurrentStage = 60
+SetObjectiveCompleted(50)
+SetObjectiveDisplayed(60)
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -350,4 +354,5 @@ Faction Property ServicesWhiterunBanneredMare Auto
 GlobalVariable Property PlayerFollowerCount Auto
 Location Property WhiterunBanneredMareLocation Auto
 ObjectReference Property RoomTrigger Auto
+Quest Property SQ01_PlayerDancing Auto
 Scene Property PunterScene Auto

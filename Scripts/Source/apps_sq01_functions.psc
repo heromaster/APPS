@@ -1,4 +1,4 @@
-Scriptname APPS_SQ01_Functions Extends Quest  Conditional
+Scriptname APPS_SQ01_Functions Extends Quest Conditional
 Import StorageUtil
 
 APPS_Controller_Functions Property Controller Auto

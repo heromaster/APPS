@@ -63,7 +63,7 @@ Int Function AddMenuGroup(String asGroupName, String asGroupLabel, Bool abIsExcl
 
 	;Try adding the new menu group, it will return -1 if the group already exists
 	If(StringListAdd(None, GROUPS, asGroupName, False) == -1)
-		Exception.Warn("APPS", "Group " + asGroupName + " already exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Group " + asGroupName + " already exists", "Invalid argument in function AddMenuGroup", True)
 		Return 0
 	EndIf
 
@@ -76,7 +76,7 @@ EndFunction
 
 Bool Function ChangeMenuGroupDescription(Int auiGroupID, String asGroupName = "", String asGroupLabel = "")
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Can't change attributes of a group which doesn't exists", "Invalid argument")
+		Exception.Warn("APPS", "Can't change attributes of a group which doesn't exists", "Invalid argument in function ChangeMenuGroupDescription")
 		Return False
 	EndIf
 
@@ -84,7 +84,7 @@ Bool Function ChangeMenuGroupDescription(Int auiGroupID, String asGroupName = ""
 		If(!StringListHas(None, GROUPS, asGroupName))
 			StringListSet(None, GROUPS, auiGroupID - 1, asGroupName)
 		Else
-			Exception.Warn("APPS", "Can't rename to the name for group ID " + auiGroupID + " because this menu group already exists.", "Invalid argument")
+			Exception.Warn("APPS", "Can't rename to the name for group ID " + auiGroupID + " because this menu group already exists.", "Invalid argument in function ChangeMenuGroupDescription")
 			Return False
 		EndIf
 	EndIf
@@ -98,7 +98,7 @@ EndFunction
 
 Bool Function SetMenuGroupExclusive(Int auiGroupID, Bool abIsExclusive = False)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Can't change attributes of a group which doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Can't change attributes of a group which doesn't exists", "Invalid argument in function SetMenuGroupExclusive", True)
 		Return False
 	EndIf
 
@@ -108,7 +108,7 @@ EndFunction
 
 Bool Function SetMenuGroupActive(Int auiGroupID, Bool abIsActive = True)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Can't change attributes of a group which doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Can't change attributes of a group which doesn't exists", "Invalid argument in function SetMenuGroupActive", True)
 		Return False
 	EndIf
 
@@ -118,7 +118,7 @@ EndFunction
 
 Bool Function RemoveMenuGroup(Int auiGroupID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Can't remove a group which doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Can't remove a group which doesn't exists", "Invalid argument in function RemoveMenuGroup", True)
 		Return False
 	EndIf
 
@@ -151,7 +151,7 @@ EndFunction
 
 Bool Function IsMenuGroupActive(Int auiGroupID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument in function IsMenuGroupActive", True)
 		Return 0
 	EndIf
 
@@ -160,7 +160,7 @@ EndFunction
 
 Bool Function IsMenuGroupExclusive(Int auiGroupID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument in function IsMenuGroupExclusive", True)
 		Return 0
 	EndIf
 
@@ -169,14 +169,14 @@ EndFunction
 
 Int Function AddMenuEntry(Int auiGroupID, String asEntry, String asEntryLabel, Bool abIsActive = True, Int auiEntryColor = 0)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Can't add entries to a group which doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Can't add entries to a group which doesn't exists", "Invalid argument in function AddMenuEntry", True)
 		Return 0
 	EndIf
 
-	Int EntryID = StringListCount(None, GROUPS + auiGroupID) + 1
+	Int EntryID = StringListCount(None, GROUPS + "." + auiGroupID) + 1
 
-	If(StringListAdd(None, GROUPS + auiGroupID, asEntry, False) == -1)
-		Exception.Warn("APPS", "Entry " + asEntry + " already exists in group with ID " + auiGroupID + ".", True)
+	If(StringListAdd(None, GROUPS + "." + auiGroupID, asEntry, False) == -1)
+		Exception.Warn("APPS", "Entry " + asEntry + " already exists in group with ID " + auiGroupID + ".", "Invalid argument in function AddMenuEntry", True)
 		Return 0
 	Else
 		SetStringValue(None, GROUP_LABEL + auiGroupID + "." + EntryID, asEntryLabel)
@@ -195,20 +195,20 @@ EndFunction
 
 Bool Function ChangeMenuEntryDescription(Int auiGroupID, Int auiEntryID, String asEntry = "", String asEntryLabel = "")
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function ChangeMenuEntryDescription")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + auiGroupID + "." + auiEntryID) || !StringListGet(None, GROUPS + auiGroupID, auiEntryID))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function ChangeMenuEntryDescription")
 		Return False
 	EndIf
 
 	If(asEntry)
-		If(!StringListHas(None, GROUPS + auiGroupID, asEntry))
-			StringListSet(None, GROUPS + auiGroupID, auiEntryID - 1, asEntry)
+		If(!StringListHas(None, GROUPS + "." + auiGroupID, asEntry))
+			StringListSet(None, GROUPS + "." + auiGroupID, auiEntryID - 1, asEntry)
 		Else
-			Exception.Warn("APPS", "Can't rename to the name for menu entry ID " + auiEntryID + " because this menu entry already exists.", "Invalid argument")
+			Exception.Warn("APPS", "Can't rename to the name for menu entry ID " + auiEntryID + " because this menu entry already exists.", "Invalid argument in function ChangeMenuEntryDescription")
 			Return False
 		EndIf
 	EndIf
@@ -222,12 +222,12 @@ EndFunction
 
 Bool Function SetMenuEntryActive(Int auiGroupID, Int auiEntryID, Bool abIsActive = True)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function SetMenuEntryActive")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function SetMenuEntryActive")
 		Return False
 	EndIf
 
@@ -242,12 +242,12 @@ EndFunction
 
 Bool Function SetMenuEntryColor(Int auiGroupID, Int auiEntryID, Int auiEntryColor)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function SetMenuEntryColor")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function SetMenuEntryColor")
 		Return False
 	EndIf
 
@@ -262,12 +262,12 @@ EndFunction
 
 Bool Function RemoveMenuEntry(Int auiGroupID, Int auiEntryID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Can't remove an entry from a group which doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Can't remove an entry from a group which doesn't exists", "Invalid argument in function RemoveMenuEntry", True)
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function RemoveMenuEntry")
 		Return False
 	EndIf
 
@@ -296,12 +296,12 @@ EndFunction
 
 Bool Function IsMenuEntryActive(Int auiGroupID, Int auiEntryID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument", True)
+		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument in function IsMenuEntryActive", True)
 		Return 0
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function IsMenuEntryActive")
 		Return False
 	EndIf
 
@@ -310,17 +310,17 @@ EndFunction
 
 String Function AddMenuEntryCallback(Int auiGroupID, Int auiEntryID, String asEventName)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function AddMenuEntryCallback")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function AddMenuEntryCallback")
 		Return False
 	EndIf
 
-	If(HasStringValue(None, GROUP_CALLBACK + "." + auiGroupID + "." + auiEntryID))
-		Exception.Warn("APPS", "This entry already has a callback registered.", "Invalid argument", True)
+	If(HasStringValue(None, GROUP_CALLBACK + auiGroupID + "." + auiEntryID))
+		Exception.Warn("APPS", "This entry already has a callback registered.", "Invalid argument in function AddMenuEntryCallback", True)
 		Return ""
 	Else
 		SetStringValue(None, GROUP_CALLBACK + auiGroupID + "." + auiEntryID, "APPS_" + asEventName)
@@ -331,17 +331,17 @@ EndFunction
 
 Bool Function RemoveMenuEntryCallback(Int auiGroupID, Int auiEntryID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function RemoveMenuEntryCallback")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function RemoveMenuEntryCallback")
 		Return False
 	EndIf
 
 	If(!HasStringValue(None, GROUP_CALLBACK + auiGroupID + "." + auiEntryID))
-		Exception.Warn("APPS", "The menu entry had no callback registered yet or is already removed", "No callback registered")
+		Exception.Warn("APPS", "The menu entry had no callback registered yet or is already removed", "No callback registered in function RemoveMenuEntryCallback")
 		Return False
 	EndIf
 
@@ -357,17 +357,17 @@ EndFunction
 
 Bool Function AddCallbackParameterFloat(Int auiGroupID, Int auiEntryID, Float afValue)
 	If(GetIntValue(None, GROUP_CALLBACK + auiGroupID + "." + auiEntryID) > 9)
-		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback")
+		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback in function AddCallbackParameterFloat")
 		Return False
 	EndIf
 
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function AddCallbackParameterFloat")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function AddCallbackParameterFloat")
 		Return False
 	EndIf
 
@@ -379,17 +379,17 @@ EndFunction
 
 Bool Function AddCallbackParameterForm(Int auiGroupID, Int auiEntryID, Form akValue)
 	If(GetIntValue(None, GROUP_CALLBACK + auiGroupID + "." + auiEntryID) > 9)
-		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback")
+		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback in function AddCallbackParameterForm")
 		Return False
 	EndIf
 
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function AddCallbackParameterForm")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function AddCallbackParameterForm")
 		Return False
 	EndIf
 
@@ -401,17 +401,17 @@ EndFunction
 
 Bool Function AddCallbackParameterInt(Int auiGroupID, Int auiEntryID, Int aiValue)
 	If(GetIntValue(None, GROUP_CALLBACK + auiGroupID + "." + auiEntryID) > 9)
-		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback")
+		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback in function AddCallbackParameterInt")
 		Return False
 	EndIf
 
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function AddCallbackParameterInt")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function AddCallbackParameterInt")
 		Return False
 	EndIf
 
@@ -423,17 +423,17 @@ EndFunction
 
 Bool Function AddCallbackParameterString(Int auiGroupID, Int auiEntryID, String asValue)
 	If(GetIntValue(None, GROUP_CALLBACK + auiGroupID + "." + auiEntryID) > 9)
-		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback")
+		Exception.Warn("APPS", "Maximum number of arguments exceeded.", "Too many arguments for callback in function AddCallbackParameterString")
 		Return False
 	EndIf
 
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
-		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The group with the ID " + auiGroupID + " doesn't exist.", "Invalid argument in function AddCallbackParameterString")
 		Return False
 	EndIf
 
 	If(auiEntryID < 1 || auiEntryID > StringListCount(None, GROUPS + "." + auiGroupID) || !StringListGet(None, GROUPS + "." + auiGroupID, auiEntryID - 1))
-		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument")
+		Exception.Warn("APPS", "The menu entry with the ID " + auiEntryID + " doesn't exist.", "Invalid argument in function AddCallbackParameterString")
 		Return False
 	EndIf
 
@@ -567,6 +567,7 @@ State SubMenuShown
 		Else
 
 			EventHandle = ModEvent.Create(GetStringValue(None, GROUP_CALLBACK + ID + "." + (i + 1)))
+			Debug.Notification("Handle:" + GetStringValue(None, GROUP_CALLBACK + ID + "." + (i + 1)))
 
 			If(EventHandle)
 				ModEvent.PushForm(EventHandle, Self)
