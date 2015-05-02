@@ -12,7 +12,7 @@ String Property GROUPS = "APPS.Menu.Groups" AutoReadOnly Hidden
 String Property TEMP_GROUPS = "APPS.Temp.Groups" AutoReadOnly Hidden
 String Property TEMP_GROUPS_LBL = "APPS.Temp.Groups.Label" AutoReadOnly Hidden
 String Property TEMP_XGROUPS = "APPS.Temp.Groups.Exclusive" AutoReadOnly Hidden
-String Property TEMP_XGROUPS_LBL = "APPS.Temp.Groups.Label.Exclusive" AutoReadOnly Hidden
+String Property TEMP_XGROUPS_LBL = "APPS.Temp.Groups.Exclusive.Label" AutoReadOnly Hidden
 String Property ENTRY = "APPS.Menu.Groups.Entries" AutoReadOnly Hidden
 Actor Property PlayerRef Auto
 
@@ -68,7 +68,6 @@ Int Function AddMenuGroup(String asGroupName, String asGroupLabel, Bool abIsExcl
 	EndIf
 
 	SetStringValue(None, GROUP_LABEL + ID, asGroupLabel)
-	SetIntValue(None, GROUP_ISEXCLUSIVE + ID, abIsExclusive As Int)
 	SetIntValue(None, GROUP_ISACTIVE + ID, 1)
 
 	Return ID
@@ -96,13 +95,18 @@ Bool Function ChangeMenuGroupDescription(Int auiGroupID, String asGroupName = ""
 	Return True
 EndFunction
 
-Bool Function SetMenuGroupExclusive(Int auiGroupID, Bool abIsExclusive = False)
+Bool Function SetMenuGroupExclusive(Int auiGroupID, Bool abIsExclusive = True)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
 		Exception.Warn("APPS", "Can't change attributes of a group which doesn't exists", "Invalid argument in function SetMenuGroupExclusive", True)
 		Return False
 	EndIf
 
-	SetIntValue(None, GROUP_ISEXCLUSIVE + auiGroupID, abIsExclusive As Int)
+	If(abIsExclusive)
+		SetIntValue(None, GROUP_ISEXCLUSIVE + auiGroupID, 1)
+	Else
+		UnsetIntValue(None, GROUP_ISEXCLUSIVE + auiGroupID)
+	EndIf
+
 	Return True
 EndFunction
 
@@ -112,7 +116,12 @@ Bool Function SetMenuGroupActive(Int auiGroupID, Bool abIsActive = True)
 		Return False
 	EndIf
 
-	SetIntValue(None, GROUP_ISACTIVE + auiGroupID, abIsActive As Int)
+	If(abIsActive)
+		SetIntValue(None, GROUP_ISACTIVE + auiGroupID, 1)
+	Else
+		UnsetIntValue(None, GROUP_ISACTIVE + auiGroupID)
+	EndIf
+
 	Return True
 EndFunction
 
@@ -152,7 +161,7 @@ EndFunction
 Bool Function IsMenuGroupActive(Int auiGroupID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
 		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument in function IsMenuGroupActive", True)
-		Return 0
+		Return False
 	EndIf
 
 	Return HasIntValue(None, GROUP_ISACTIVE + auiGroupID)
@@ -161,7 +170,7 @@ EndFunction
 Bool Function IsMenuGroupExclusive(Int auiGroupID)
 	If(auiGroupID < 1 || auiGroupID > StringListCount(None, GROUPS) || !StringListGet(None, GROUPS, auiGroupID - 1))
 		Exception.Warn("APPS", "Menu group with ID " + auiGroupID + " doesn't exists", "Invalid argument in function IsMenuGroupExclusive", True)
-		Return 0
+		Return False
 	EndIf
 
 	Return HasIntValue(None, GROUP_ISEXCLUSIVE + auiGroupID)
@@ -473,8 +482,8 @@ State MainMenuShown
 		EndIf
 
 		While(i < StringListCount(None, GROUPS))
-			If(GetIntValue(None, GROUP_ISACTIVE + (i + 1)))
-				If(GetIntValue(None, GROUP_ISEXCLUSIVE + (i + 1)))
+			If(HasIntValue(None, GROUP_ISACTIVE + (i + 1)))
+				If(HasIntValue(None, GROUP_ISEXCLUSIVE + (i + 1)))
 					StringListAdd(None, TEMP_XGROUPS, StringListGet(None, GROUPS, i))
 					StringListAdd(None, TEMP_XGROUPS_LBL, GetStringValue(None, GROUP_LABEL + (i + 1)))
 				Else
@@ -565,41 +574,40 @@ State SubMenuShown
 			GoToState("MainMenuShown")
 			InteractiveMenu()
 		Else
-
-			EventHandle = ModEvent.Create(GetStringValue(None, GROUP_CALLBACK + ID + "." + (i + 1)))
-			Debug.Notification("Handle:" + GetStringValue(None, GROUP_CALLBACK + ID + "." + (i + 1)))
+			EventHandle = ModEvent.Create(GetStringValue(None, GROUP_CALLBACK + ID + "." + (SelectedMenu + 1)))
+			Debug.Notification("Handle:" + GetStringValue(None, GROUP_CALLBACK + ID + "." + (SelectedMenu + 1)))
 
 			If(EventHandle)
 				ModEvent.PushForm(EventHandle, Self)
 
 				Int j
 
-				While(j < FormListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1)))
-					ModEvent.PushForm(EventHandle, FormListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1), j))
+				While(j < FormListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1)))
+					ModEvent.PushForm(EventHandle, FormListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1), j))
 
 					j += 1
 				EndWhile
 
 				j = 0
 
-				While(j < IntListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1)))
-					ModEvent.PushInt(EventHandle, IntListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1), j))
+				While(j < IntListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1)))
+					ModEvent.PushInt(EventHandle, IntListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1), j))
 
 					j += 1
 				EndWhile
 
 				j = 0
 
-				While(j < FloatListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1)))
-					ModEvent.PushFloat(EventHandle, FloatListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1), j))
+				While(j < FloatListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1)))
+					ModEvent.PushFloat(EventHandle, FloatListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1), j))
 
 					j += 1
 				EndWhile
 
 				j = 0
 
-				While(j < StringListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1)))
-					ModEvent.PushString(EventHandle, StringListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (i + 1), j))
+				While(j < StringListCount(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1)))
+					ModEvent.PushString(EventHandle, StringListGet(None, GROUP_CALLBACK_PARAMETERS + ID + "." + (SelectedMenu + 1), j))
 
 					j += 1
 				EndWhile
