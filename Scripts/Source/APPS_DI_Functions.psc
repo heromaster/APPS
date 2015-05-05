@@ -17,8 +17,23 @@ String Property ENTRY = "APPS.Menu.Groups.Entries" AutoReadOnly Hidden
 Actor Property PlayerRef Auto
 
 Event OnKeyUp(Int aiKeyCode, Float afHoldTime)
-	;Don't do anything if the game has a menu or the console opened or if the wheel menu isn't active
-	If(Utility.IsInMenuMode() || !IsWheelMenuActive())
+	Int EventHandle
+
+	;Don't do anything if the game has a menu or the console opened
+	If(Utility.IsInMenuMode())
+		Return
+	EndIf
+
+	If(!IsWheelMenuActive())
+		EventHandle = ModEvent.Create("APPS_WheelMenuNotActive")
+
+		If(EventHandle)
+			ModEvent.PushForm(EventHandle, Self)
+			ModEvent.Send(EventHandle)
+		Else
+			Exception.Throw("APPS", "Could not create an event handle, aborting!", "Unexpected exception")
+		EndIf
+
 		Return
 	EndIf
 
@@ -575,7 +590,6 @@ State SubMenuShown
 			InteractiveMenu()
 		Else
 			EventHandle = ModEvent.Create(GetStringValue(None, GROUP_CALLBACK + ID + "." + (SelectedMenu + 1)))
-			Debug.Notification("Handle:" + GetStringValue(None, GROUP_CALLBACK + ID + "." + (SelectedMenu + 1)))
 
 			If(EventHandle)
 				ModEvent.PushForm(EventHandle, Self)
@@ -613,6 +627,8 @@ State SubMenuShown
 				EndWhile
 
 				ModEvent.Send(EventHandle)
+			Else
+				Exception.Throw("APPS", "Could not create an event handle, aborting!", "Unexpected exception")
 			EndIf
 
 			GoToState("")

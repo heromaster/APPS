@@ -224,7 +224,13 @@ EndFunction
 
 ;BEGIN FRAGMENT Fragment_14
 Function Fragment_14()
+;BEGIN AUTOCAST TYPE APPS_SQ01_Functions
+Quest __temp = self as Quest
+APPS_SQ01_Functions kmyQuest = __temp as APPS_SQ01_Functions
+;END AUTOCAST
 ;BEGIN CODE
+kmyQuest.CurrentStage = 90
+
 If(!WheelMenu.IsWheelMenuActive())
 	WheelMenu.SetWheelMenuActive()
 Else
@@ -251,30 +257,26 @@ Else
 EndIf
 
 If(Alias_Tavern.GetLocation() == WhiterunBanneredMareLocation)
-	Location Tavern = Alias_Tavern.GetLocation()
 	ObjectReference Marker1 = Alias_PlayerDanceAudienceMarker1.GetRef()
 	ObjectReference Marker2 = Alias_PlayerDanceAudienceMarker2.GetRef()
 	ObjectReference Marker3 = Alias_PlayerDanceAudienceMarker3.GetRef()
 	ObjectReference Marker4 = Alias_PlayerDanceAudienceMarker4.GetRef()
 
 	Marker1.MoveTo(PlayerRef)
-	Marker1.SetPosition(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 0), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 1), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 2))
-	Marker1.SetAngle(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 3), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 4), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 5))
+	Marker1.SetPosition(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 0), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 1), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 2))
+	Marker1.SetAngle(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 3), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 4), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions1", 5))
 	Marker1.Enable()
-
 	Marker2.MoveTo(PlayerRef)
-	Marker2.SetPosition(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 0), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 1), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 2))
-	Marker2.SetAngle(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 3), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 4), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 5))
+	Marker2.SetPosition(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 0), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 1), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 2))
+	Marker2.SetAngle(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 3), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 4), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions2", 5))
 	Marker2.Enable()
-
 	Marker3.MoveTo(PlayerRef)
-	Marker3.SetPosition(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 0), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 1), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 2))
-	Marker3.SetAngle(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 3), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 4), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 5))
+	Marker3.SetPosition(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 0), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 1), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 2))
+	Marker3.SetAngle(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 3), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 4), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions3", 5))
 	Marker3.Enable()
-
 	Marker4.MoveTo(PlayerRef)
-	Marker4.SetPosition(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 0), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 1), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 2))
-	Marker4.SetAngle(StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 3), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 4), StorageUtil.FloatListGet(Tavern, "APPS.SQ01.Dance.MarkerPosition", 5))
+	Marker4.SetPosition(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 0), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 1), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 2))
+	Marker4.SetAngle(StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 3), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 4), StorageUtil.FloatListGet(WhiterunBanneredMareLocation, "APPS.SQ01.Dance.MarkerPositions4", 5))
 	Marker4.Enable()
 EndIf
 

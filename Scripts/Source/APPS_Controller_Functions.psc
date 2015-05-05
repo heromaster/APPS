@@ -6,6 +6,7 @@ SexLabFramework Property SexLab Auto
 Bool Property IsGivingAllGold Auto Conditional Hidden
 Bool Property IsPlayerJobWhore Auto Conditional Hidden
 Bool Property IsPlayerTop Auto Conditional Hidden
+Float Property DanceRewardMulti Auto Conditional Hidden
 Int Property FoodOrdersFailed Auto Conditional Hidden
 Int Property Satisfaction Auto Conditional Hidden
 Int Property SexActToInt Auto Conditional Hidden
@@ -257,7 +258,7 @@ Function EarnReward(Actor akClient, Int auiTask)
 			GoldAmount += GetIntValue(None, BASE_PAYMENT_WHORE) * FreeFuckMulti
 		EndIf
 	ElseIf(auiTask == 3)
-		GoldAmount = Utility.RandomInt(GetIntValue(None, MIN_DANCE_REWARD), GetIntValue(None, MAX_DANCE_REWARD))
+		GoldAmount = Utility.RandomInt(GetIntValue(None, MIN_DANCE_REWARD), GetIntValue(None, MAX_DANCE_REWARD)) * DanceRewardMulti
 
 		If(IsPlayerJobWhore)
 			AdjustIntValue(None, INNKEEPER_SHARE, Math.Floor(GoldAmount / 2))

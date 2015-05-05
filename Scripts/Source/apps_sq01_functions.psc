@@ -34,7 +34,7 @@ String Property BILL = "APPS.SQ01.Bill" AutoReadOnly Hidden
 String Property HOURS_TO_WORK = "APPS.Settings.HoursToWork" AutoReadOnly Hidden
 String Property HOURS_TO_WORK_EXPECTED = "APPS.Settings.HoursToWorkExpected" AutoReadOnly Hidden
 String Property ORDER_LIST = "APPS.SQ01.OrderList" AutoReadOnly Hidden
-String Property PAYMENT = "APPS.Settings.Payment" AutoReadOnly Hidden
+String Property PAYMENT = "APPS.Settings.BasePayment" AutoReadOnly Hidden
 String Property SUPPOSED_ORDER_LIST = "APPS.SQ01.SupposedOrderList" AutoReadOnly Hidden
 String Property WAGES = "APPS.SQ01.Wages" AutoReadOnly Hidden
 

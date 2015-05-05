@@ -101,6 +101,8 @@ Event OnInit()
 	SetIntValue(None, AUTO_SAVE, 1)
 	SetIntValue(None, HOURS_TO_WORK, 8)
 	SetIntValue(None, HOURS_TO_WORK_EXPECTED, 4)
+	SetIntValue(None, MIN_DANCE_REWARD, 8)
+	SetIntValue(None, MAX_DANCE_REWARD, 16)
 	SetFloatValue(None, MIN_TIP, 0.05)
 	SetFloatValue(None, MAX_TIP, 0.10)
 	SetFloatValue(None, MIN_TIP_SC, 0.10)
@@ -112,7 +114,6 @@ Event OnInit()
 	SetFloatValue(None, ANAL_MOD, 0.50)
 	SetFloatValue(None, ORAL_MOD, 0.25)
 	SetFloatValue(None, VAGINAL_MOD, 1.00)
-
 	Parent.OnInit()
 EndEvent
 
