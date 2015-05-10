@@ -55,7 +55,7 @@ String Property VAGINAL_MOD = "APPS.Settings.VaginalModifier" AutoReadOnly Hidde
 String Property WHORE_MOD = "APPS.Settings.WhoreModifier" AutoReadOnly Hidden
 String Property SexAct Hidden
 	Function Set(String Value)
-		SexAct = Value
+		_SexAct = Value
 
 		If(Value == "Oral")
 			SexActToInt = 1
@@ -145,7 +145,7 @@ Function AddToSexAct(Actor[] akParticipants, Int auiSexAct)
 
 	While(i < akParticipants.Length)
 		FormListAdd(None, SEX_ACT, akParticipants[i])
-
+		Debug.Trace("Loop:" + (i + 1))
 		i += 1
 	EndWhile
 

@@ -1,6 +1,8 @@
 Scriptname APPS_SKI_MenuConfig Extends SKI_ConfigBase
 Import StorageUtil
 
+APPS_DI_Functions Property DynamicInteractions Auto
+
 String Property ANAL_MOD = "APPS.Settings.AnalModifier" AutoReadOnly Hidden
 String Property AUTO_SAVE = "APPS.Settings.AutoSave" AutoReadOnly Hidden
 String Property BASE_PAYMENT = "APPS.Settings.BasePayment" AutoReadOnly Hidden
@@ -511,13 +513,7 @@ Event OnOptionKeyMapChange(Int aiOption, Int aiNewKeyCode, String asConflictCont
 	SetIntValue(None, "APPS.KeyMap.DynamicInteraction", aiNewKeyCode)
 	SetKeyMapOptionValue(DynamicInteraction, aiNewKeyCode)
 
-	EventHandle = ModEvent.Create("APPS_MapKey")
-
-	If(EventHandle)
-		ModEvent.PushForm(EventHandle, Self)
-		ModEvent.PushInt(EventHandle, aiNewKeyCode)
-		ModEvent.Send(EventHandle)
-	EndIf
+	DynamicInteractions.SetKey(aiNewKeyCode)
 EndEvent
 
 ;-------------------------------------------------------

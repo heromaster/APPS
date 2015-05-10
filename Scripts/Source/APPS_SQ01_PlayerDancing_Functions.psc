@@ -32,3 +32,8 @@ Event OnInactiveMenu(Form akSender)
 	UnregisterForModEvent("APPS_WheelMenuNotActive")
 	HasPlayerStoppedDancing = True
 EndEvent
+
+Function StopMyself()
+	UnregisterForModEvent("APPS_Dance")
+	Stop()
+EndFunction
